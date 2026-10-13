@@ -6,19 +6,20 @@
 <title>Automotiva × Tealdev</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#070808;
-    --bg-soft:#0d0f0f;
-    --card:#121515;
-    --card-2:#161a1a;
-    --line:#22282a;
+    --bg:#0b0f0e;
+    --bg2:#0e1413;
+    --card:#141c1a;
+    --card-2:#17201e;
+    --line:#223130;
     --teal:#0D9488;
     --teal-light:#2dd4bf;
-    --white:#f2f1ee;
-    --grey:#9aa0a0;
-    --grey-dim:#5f6666;
+    --amber:#e0a96d;
+    --white:#f2f4f3;
+    --grey:#9fb0ad;
+    --grey-dim:#5d6e6b;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
@@ -28,409 +29,359 @@
     font-family:'Inter',sans-serif;
     line-height:1.5;
     overflow-x:hidden;
-    cursor:default;
   }
-  em{
-    font-family:'Fraunces',serif;
-    font-style:italic;
-    font-weight:500;
-    color:var(--teal-light);
+  code,.mono{font-family:'JetBrains Mono',monospace;}
+
+  /* animated mesh background */
+  .mesh{position:fixed;inset:0;z-index:0;overflow:hidden;}
+  .mesh::before,.mesh::after{
+    content:'';position:absolute;border-radius:50%;filter:blur(110px);opacity:.16;
   }
+  .mesh::before{width:50vw;height:50vw;background:var(--teal);top:-10%;left:-10%;animation:float1 22s ease-in-out infinite;}
+  .mesh::after{width:40vw;height:40vw;background:#6d28d9;bottom:-10%;right:-5%;animation:float2 26s ease-in-out infinite;}
+  @keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(6vw,8vh);}}
+  @keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-5vw,-6vh);}}
+  .grid-overlay{
+    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;
+    background-image:linear-gradient(to right, rgba(255,255,255,.025) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size:64px 64px;
+  }
+  .grain{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.02;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
   section{
-    min-height:100vh;
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    padding:110px 9vw 90px;
-    position:relative;
+    min-height:100vh;width:100%;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:110px 9vw 90px;position:relative;z-index:2;
     border-bottom:1px solid var(--line);
   }
-  .reveal{
-    opacity:0;
-    transform:translateY(28px);
-    filter:blur(6px);
-    transition:opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1), filter 0.9s cubic-bezier(.2,.7,.2,1);
-  }
-  .reveal.in{
-    opacity:1;
-    transform:translateY(0);
-    filter:blur(0);
-  }
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
   .r1{transition-delay:.05s;} .r2{transition-delay:.15s;} .r3{transition-delay:.25s;} .r4{transition-delay:.35s;}
 
-  /* top bar */
-  .topbar{
-    position:fixed;top:0;left:0;right:0;
-    display:flex;justify-content:space-between;align-items:center;
-    padding:26px 9vw;
-    z-index:50;
-    mix-blend-mode:difference;
-  }
-  .topbar .brand{font-weight:800;letter-spacing:1px;font-size:15px;}
+  .topbar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:24px 9vw;z-index:50;backdrop-filter:blur(6px);}
+  .topbar .brand{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:.5px;font-size:15px;}
   .topbar .brand span{color:var(--teal-light);}
-  .topbar .meta{font-size:11px;letter-spacing:2px;color:var(--grey);text-transform:uppercase;}
+  .topbar .meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey-dim);}
 
-  /* side nav dots */
-  .sidenav{
-    position:fixed;right:28px;top:50%;transform:translateY(-50%);
-    display:flex;flex-direction:column;gap:12px;z-index:50;
-  }
-  .sidenav .dot{
-    width:6px;height:6px;border-radius:50%;background:var(--grey-dim);
-    transition:all .3s;
-  }
-  .sidenav .dot.active{background:var(--teal-light);width:9px;height:9px;box-shadow:0 0 10px var(--teal-light);}
+  .sidenav{position:fixed;right:28px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:11px;z-index:50;}
+  .sidenav .dot{width:5px;height:5px;border-radius:50%;background:var(--grey-dim);transition:all .3s;cursor:pointer;}
+  .sidenav .dot.active{background:var(--teal-light);width:8px;height:16px;border-radius:3px;box-shadow:0 0 10px var(--teal-light);}
 
-  .tag{
-    text-transform:uppercase;
-    letter-spacing:3px;
-    font-size:12px;
-    color:var(--teal-light);
-    font-weight:600;
-    margin-bottom:26px;
-    display:flex;align-items:center;gap:10px;
-  }
-  .tag::before{content:'';width:18px;height:1px;background:var(--teal-light);}
-  .num{
-    position:absolute;
-    bottom:40px;
-    left:9vw;
-    font-size:12px;
-    color:var(--grey-dim);
-    letter-spacing:2px;
-    font-variant-numeric:tabular-nums;
-  }
-  h1{
-    font-family:'Fraunces',serif;
-    font-weight:500;
-    font-size:clamp(38px,6.4vw,84px);
-    line-height:1.06;
-    letter-spacing:-1px;
-    max-width:1100px;
-  }
-  h2{
-    font-family:'Fraunces',serif;
-    font-weight:500;
-    font-size:clamp(28px,4.4vw,56px);
-    line-height:1.1;
-    letter-spacing:-0.5px;
-    max-width:920px;
-    margin-bottom:26px;
-  }
-  p.lead{
-    font-size:clamp(16px,1.3vw,20px);
-    color:var(--grey);
-    max-width:720px;
-    margin-top:22px;
-    font-weight:400;
-  }
+  .tag{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:2px;font-size:11.5px;color:var(--teal-light);font-weight:500;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+  .tag::before{content:'//';color:var(--grey-dim);}
+  .num{position:absolute;bottom:40px;left:9vw;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--grey-dim);letter-spacing:1px;}
+
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,6vw,78px);line-height:1.06;letter-spacing:-1.5px;max-width:1100px;}
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(27px,4vw,50px);line-height:1.12;letter-spacing:-1px;max-width:920px;margin-bottom:24px;}
+  .accent{color:var(--teal-light);}
+  p.lead{font-size:clamp(15.5px,1.2vw,19px);color:var(--grey);max-width:720px;margin-top:20px;font-weight:400;}
   strong{color:var(--white);font-weight:600;}
-  .bignum{
-    font-size:clamp(46px,6.4vw,100px);
-    font-weight:800;
-    font-family:'Inter',sans-serif;
-    color:var(--white);
-    line-height:1;
-    letter-spacing:-2px;
-  }
-  .bignum .u{color:var(--teal-light);font-size:0.4em;font-weight:700;margin-left:4px;}
+  .bignum{font-family:'Space Grotesk',sans-serif;font-size:clamp(42px,5.6vw,88px);font-weight:700;color:var(--white);line-height:1;letter-spacing:-2px;}
+  .bignum .u{color:var(--teal-light);font-size:.4em;margin-left:3px;}
 
-  /* data rows like anartra */
-  .datarows{max-width:900px;margin-top:10px;border-top:1px solid var(--line);}
-  .datarow{
-    display:grid;grid-template-columns:200px 1fr;
-    gap:24px;padding:22px 0;border-bottom:1px solid var(--line);
-    align-items:baseline;
-  }
-  .datarow .k{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey-dim);}
-  .datarow .v{font-size:18px;color:var(--grey);}
-  .datarow .v strong{color:var(--white);font-weight:700;}
-  @media(max-width:760px){.datarow{grid-template-columns:1fr;gap:6px;}}
-
-  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px;margin-top:50px;max-width:1100px;}
-  .stat .bignum{font-size:clamp(32px,4vw,52px);}
-  .stat .label{color:var(--grey-dim);font-size:12px;margin-top:10px;text-transform:uppercase;letter-spacing:1.5px;}
-
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:30px;}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1100px;}
-  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1200px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:28px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1100px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1200px;}
   @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr;}section{padding:90px 6vw 70px;}}
 
-  .pill{display:inline-block;padding:7px 18px;border-radius:999px;border:1px solid var(--line);color:var(--grey);font-size:12px;letter-spacing:1px;margin-bottom:24px;}
+  .pill{font-family:'JetBrains Mono',monospace;display:inline-block;padding:7px 16px;border-radius:6px;border:1px solid var(--line);background:rgba(13,148,136,.08);color:var(--teal-light);font-size:11.5px;letter-spacing:1px;margin-bottom:26px;}
 
-  /* flow process row like anartra */
-  .flowrow{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-top:46px;max-width:1300px;position:relative;}
-  .flowrow::before{content:'';position:absolute;top:28px;left:0;right:0;height:1px;background:repeating-linear-gradient(to right,var(--line) 0 6px,transparent 6px 12px);z-index:0;}
-  .fcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 14px;position:relative;z-index:1;min-height:120px;}
-  .fcard.hl{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal);}
-  .fcard .ic{width:26px;height:26px;border-radius:6px;background:var(--bg-soft);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:13px;color:var(--teal-light);}
-  .fcard .ti{font-size:13px;font-weight:700;margin-bottom:4px;}
-  .fcard .de{font-size:11px;color:var(--grey-dim);line-height:1.4;}
-  .fcard .badge{display:inline-block;margin-top:6px;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--teal-light);background:rgba(45,212,191,.1);padding:2px 7px;border-radius:4px;}
+  /* terminal window chrome for technical bits */
+  .term{background:#0a0d0c;border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:640px;margin-top:30px;}
+  .term-bar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#111817;border-bottom:1px solid var(--line);}
+  .term-bar span{width:10px;height:10px;border-radius:50%;background:#3a4745;}
+  .term-bar .lbl{margin-left:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--grey-dim);}
+  .term-body{padding:20px 22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--grey);line-height:1.8;}
+  .term-body .k{color:var(--teal-light);}
+  .term-body .s{color:var(--amber);}
+  .term-body .c{color:var(--grey-dim);}
+
+  /* data cards (different from table rows) */
+  .data-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;max-width:1100px;margin-top:10px;}
+  .data-cards .dc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;}
+  .data-cards .dc .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey-dim);margin-bottom:10px;}
+  .data-cards .dc .v{font-size:16px;color:var(--white);line-height:1.4;}
+  .data-cards .dc .v b{color:var(--teal-light);}
+
+  .flowrow{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-top:44px;max-width:1300px;position:relative;}
+  .flowrow::before{content:'';position:absolute;top:27px;left:0;right:0;height:1px;background:repeating-linear-gradient(to right,var(--line) 0 6px,transparent 6px 12px);z-index:0;}
+  .fcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:15px 13px;position:relative;z-index:1;min-height:112px;}
+  .fcard.hl{border-color:var(--teal);box-shadow:0 0 18px -6px rgba(45,212,191,.35);}
+  .fcard .ic{width:24px;height:24px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;margin-bottom:9px;font-size:12px;color:var(--teal-light);font-family:'JetBrains Mono',monospace;}
+  .fcard .ti{font-size:12.5px;font-weight:700;margin-bottom:4px;font-family:'Space Grotesk',sans-serif;}
+  .fcard .de{font-size:10.5px;color:var(--grey-dim);line-height:1.4;}
+  .fcard .badge{display:inline-block;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--teal-light);background:rgba(45,212,191,.1);padding:2px 7px;border-radius:4px;}
   @media(max-width:1000px){.flowrow{grid-template-columns:repeat(4,1fr);}.flowrow::before{display:none;}}
   @media(max-width:620px){.flowrow{grid-template-columns:repeat(2,1fr);}}
 
   .kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px;max-width:1200px;}
-  .kcol{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:16px;}
-  .kcol h4{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--grey-dim);margin-bottom:14px;}
+  .kcol{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px;}
+  .kcol h4{font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--grey-dim);margin-bottom:14px;}
   .kcard{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:13px;margin-bottom:10px;}
-  .kcard .src{font-size:10px;color:var(--teal-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+  .kcard .src{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--teal-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
   @media(max-width:900px){.kanban{grid-template-columns:repeat(2,1fr);}}
 
-  /* whatsapp mock */
-  .wa-mock{max-width:420px;background:#0b141a;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:44px;}
+  /* whatsapp animated typing demo */
+  .wa-mock{max-width:420px;background:#0b141a;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:40px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);}
   .wa-head{background:#1f2c34;padding:14px 18px;display:flex;align-items:center;gap:12px;}
   .wa-avatar{width:36px;height:36px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#06201c;}
   .wa-head .name{font-size:14px;font-weight:600;}
   .wa-head .status{font-size:11px;color:var(--teal-light);}
-  .wa-body{padding:18px;background:#0b141a;background-image:radial-gradient(circle at 20% 10%,rgba(255,255,255,.02) 0,transparent 40%);}
-  .bubble{padding:10px 14px;border-radius:10px;margin-bottom:10px;font-size:13.5px;max-width:85%;line-height:1.4;}
+  .wa-body{padding:18px;background:#0b141a;min-height:260px;}
+  .bubble{padding:10px 14px;border-radius:10px;margin-bottom:10px;font-size:13.5px;max-width:85%;line-height:1.4;opacity:0;transform:translateY(8px);transition:all .4s ease;}
+  .bubble.show{opacity:1;transform:translateY(0);}
   .bubble.in{background:#1f2c34;border-top-left-radius:2px;}
   .bubble.out{background:#005c4b;margin-left:auto;border-top-right-radius:2px;}
   .bubble .tm{display:block;font-size:10px;color:#7d8e94;margin-top:4px;text-align:right;}
+  .typing-dots{display:none;background:#1f2c34;border-radius:10px;border-top-left-radius:2px;padding:10px 14px;width:46px;margin-bottom:10px;}
+  .typing-dots.show{display:block;}
+  .typing-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--grey);margin-right:3px;animation:tdot 1.1s infinite;}
+  .typing-dots span:nth-child(2){animation-delay:.15s;}
+  .typing-dots span:nth-child(3){animation-delay:.3s;}
+  @keyframes tdot{0%,60%,100%{opacity:.3;}30%{opacity:1;}}
 
-  .vs{display:grid;grid-template-columns:1fr 1fr;gap:0;max-width:1100px;margin-top:44px;border:1px solid var(--line);border-radius:16px;overflow:hidden;}
-  .vs>div{padding:34px;}
-  .vs .them{background:var(--bg-soft);}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:0;max-width:1100px;margin-top:40px;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .vs>div{padding:32px;}
+  .vs .them{background:var(--bg2);}
   .vs .us{background:var(--card);border-left:1px solid var(--teal);}
-  .vs h3{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--grey-dim);margin-bottom:22px;}
+  .vs h3{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--grey-dim);margin-bottom:20px;}
   .vs .us h3{color:var(--teal-light);}
   .vs ul{list-style:none;}
-  .vs li{padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--grey);}
+  .vs li{padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--grey);}
   .vs .us li{color:var(--white);}
 
-  .stack-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:44px;max-width:1100px;}
-  .stack-chip{background:var(--card);border:1px solid var(--line);padding:13px 20px;border-radius:10px;font-weight:600;font-size:14px;color:var(--grey);}
-  .stack-chip b{color:var(--white);}
+  .stack-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:40px;max-width:1100px;}
+  .stack-chip{font-family:'JetBrains Mono',monospace;background:var(--card);border:1px solid var(--line);padding:11px 18px;border-radius:8px;font-weight:500;font-size:13px;color:var(--grey);}
+  .stack-chip b{color:var(--white);font-weight:600;}
 
-  .source{font-size:12px;color:var(--grey-dim);margin-top:10px;}
-  .steps{display:flex;flex-direction:column;gap:20px;max-width:720px;margin-top:44px;}
-  .step-row{display:flex;gap:22px;align-items:flex-start;}
-  .step-n{background:transparent;border:1px solid var(--teal);color:var(--teal-light);font-weight:700;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;}
+  .source{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--grey-dim);margin-top:10px;}
+  .steps{display:flex;flex-direction:column;gap:18px;max-width:720px;margin-top:40px;}
+  .step-row{display:flex;gap:20px;align-items:flex-start;}
+  .step-n{font-family:'JetBrains Mono',monospace;border:1px solid var(--teal);color:var(--teal-light);font-weight:600;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12.5px;}
 
-  .cta-row{display:flex;gap:16px;margin-top:44px;flex-wrap:wrap;}
-  .cta-btn{display:inline-block;background:var(--teal-light);color:#06201c;font-weight:700;padding:16px 36px;border-radius:999px;font-size:15px;letter-spacing:.3px;}
+  .cta-row{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap;}
+  .cta-btn{display:inline-block;background:var(--teal-light);color:#06201c;font-weight:700;padding:15px 32px;border-radius:10px;font-size:14.5px;letter-spacing:.2px;font-family:'Space Grotesk',sans-serif;}
   .cta-btn.ghost{background:transparent;border:1px solid var(--line);color:var(--white);}
 
   .center{align-items:center;text-align:center;}
-  ul.plain{list-style:none;margin-top:14px;max-width:780px;}
-  ul.plain li{padding:14px 0;color:var(--grey);font-size:15.5px;border-bottom:1px solid var(--line);}
+  ul.plain{list-style:none;margin-top:12px;max-width:780px;}
+  ul.plain li{padding:13px 0;color:var(--grey);font-size:15px;border-bottom:1px solid var(--line);}
   ul.plain li strong{color:var(--white);}
 
-  .security-note{margin-top:60px;border-top:1px solid var(--line);padding-top:22px;max-width:720px;font-size:13.5px;color:var(--grey-dim);}
+  .limits{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1000px;margin-top:40px;}
+  .limits .no{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.25);border-radius:12px;padding:26px;}
+  .limits .si{background:rgba(45,212,191,.05);border:1px solid rgba(45,212,191,.3);border-radius:12px;padding:26px;}
+  .limits h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;}
+  .limits .no h4{color:#f87171;}
+  .limits .si h4{color:var(--teal-light);}
+  .limits li{padding:7px 0;font-size:14px;color:var(--grey);list-style:none;}
+  @media(max-width:760px){.limits{grid-template-columns:1fr;}}
 
-  .codebox{
-    background:#0b0d0d;border:1px solid var(--line);border-radius:12px;padding:22px 24px;
-    font-family:'SF Mono','Courier New',monospace;font-size:12.5px;color:var(--grey);
-    max-width:620px;margin-top:30px;line-height:1.7;overflow-x:auto;
-  }
-  .codebox .k{color:var(--teal-light);}
-  .codebox .s{color:#e0a96d;}
-  .codebox .c{color:var(--grey-dim);}
-
-  footer.logo-mark{display:none;}
-
-  /* intro loader fade */
-  .grain{
-    position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.025;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
+  .security-note{margin-top:56px;border-top:1px solid var(--line);padding-top:20px;max-width:720px;font-size:13px;color:var(--grey-dim);}
 </style>
 </head>
 <body>
 
+<div class="mesh"></div>
+<div class="grid-overlay"></div>
 <div class="grain"></div>
+
 <div class="topbar">
   <div class="brand">&lt;teal<span>dev</span>/&gt;</div>
-  <div class="meta">Automotiva × Tealdev</div>
+  <div class="meta">AUTOMOTIVA_PROPUESTA.v2</div>
 </div>
 <div class="sidenav" id="sidenav"></div>
 
 <!-- 01 PORTADA -->
 <section class="center" id="s1">
   <div class="reveal r1 center" style="display:flex;flex-direction:column;align-items:center;">
-    <div class="pill">AUTOMOTIVA × TEALDEV · PROPUESTA TÉCNICA</div>
-    <h1>Los contactos ya los tienes.<br>Ahora hay que <em>convertirlos.</em></h1>
-    <p class="lead">Cada mes entran <strong>338 contactos</strong> a tu negocio. Hoy, casi ninguno recibe seguimiento real. Esto es el sistema que lo cambia — construido sobre lo que ya tienes.</p>
+    <div class="pill">$ automotiva --status=338_leads/mes --seguimiento=0</div>
+    <h1>Tienes los contactos.<br>Te falta el <span class="accent">sistema</span> que no deja escapar a ninguno.</h1>
+    <p class="lead">338 personas al mes llegan hasta tu puerta. Hoy, la mayoría se va sin que nadie vuelva a escribirles. Esto es lo que construimos para que eso no pase — encima de lo que ya tienes, sin tocar lo que funciona.</p>
   </div>
-  <span class="num">01 / 19 — PORTADA</span>
+  <span class="num">01/19 · intro</span>
 </section>
 
 <!-- 02 QUIENES SOMOS -->
 <section id="s2">
-  <div class="tag reveal r1">Quiénes somos</div>
-  <h2 class="reveal r2">Tealdev. Ingeniería de automatización, <em>no publicidad.</em></h2>
-  <p class="lead reveal r3">No gestionamos campañas de Google ni Meta. Construimos la infraestructura que conecta formulario, WhatsApp, CRM y equipo comercial — para que ningún lead se quede sin respuesta ni sin seguimiento.</p>
-  <div class="grid-3 reveal r4" style="margin-top:50px;">
-    <div class="card"><div class="bignum" style="font-size:36px;">n8n</div><p style="color:var(--grey-dim);margin-top:12px;font-size:13.5px;">Orquestación de workflows sobre infraestructura propia, sin depender de plataformas cerradas.</p></div>
-    <div class="card"><div class="bignum" style="font-size:36px;">Odoo</div><p style="color:var(--grey-dim);margin-top:12px;font-size:13.5px;">API REST / XML-RPC sobre tu instalación actual. Sin migraciones, sin romper nada.</p></div>
-    <div class="card"><div class="bignum" style="font-size:36px;">WABA</div><p style="color:var(--grey-dim);margin-top:12px;font-size:13.5px;">WhatsApp Business API oficial (Meta/Twilio), con plantillas aprobadas y trazabilidad.</p></div>
+  <div class="tag reveal r1">quienes-somos</div>
+  <h2 class="reveal r2">No vendemos clics. <span class="accent">Programamos el después del clic.</span></h2>
+  <p class="lead reveal r3">Tealdev construye automatizaciones a medida: scripts propios, integraciones con tu CRM y bots conversacionales. No gestionamos campañas de publicidad — hacemos la ingeniería que convierte lo que la publicidad ya te trae.</p>
+  <div class="term reveal r4">
+    <div class="term-bar"><span></span><span></span><span></span><div class="lbl">tealdev · stack.config</div></div>
+    <div class="term-body">
+<span class="c">// lo que hacemos, sin rodeos</span><br>
+<span class="k">const</span> tealdev = {<br>
+&nbsp;&nbsp;automatizacion: <span class="s">"scripts propios (Node / Python)"</span>,<br>
+&nbsp;&nbsp;integraciones: <span class="s">"CRM, WhatsApp, email, calendario"</span>,<br>
+&nbsp;&nbsp;chatbots: <span class="s">"a medida, con memoria de contexto"</span>,<br>
+&nbsp;&nbsp;publicidad: <span class="k">null</span> <span class="c">// no es lo nuestro</span><br>
+};
+    </div>
   </div>
-  <span class="num">02 / 19 — QUIÉNES SOMOS</span>
+  <span class="num">02/19 · quienes somos</span>
 </section>
 
-<!-- 03 LO QUE NOS CONTASTE -->
+<!-- 03 LOS DATOS -->
 <section id="s3">
-  <div class="tag reveal r1">Lo que nos contaste</div>
-  <h2 class="reveal r2">Dónde está Automotiva hoy</h2>
-  <p class="lead reveal r3" style="margin-top:0;">No suponemos nada: son las cifras que diste en la llamada.</p>
-  <div class="datarows reveal r4">
-    <div class="datarow"><div class="k">El producto</div><div class="v">Cursos de <strong>480 horas</strong>, de 3 o 6 meses, con prácticas en talleres locales. Mecánica y chapa y pintura.</div></div>
-    <div class="datarow"><div class="k">Ticket</div><div class="v"><strong>1.680 €</strong> con SeQura · <strong>1.480 €</strong> al contado.</div></div>
-    <div class="datarow"><div class="k">Publicidad</div><div class="v">Google Ads, unos <strong>3.400 €/mes</strong>.</div></div>
-    <div class="datarow"><div class="k">Contactos</div><div class="v"><strong>338 al mes</strong>, por formulario, teléfono y WhatsApp con IA.</div></div>
-    <div class="datarow"><div class="k">Alumnos</div><div class="v"><strong>48</strong> totales a día de hoy.</div></div>
-    <div class="datarow"><div class="k">CRM</div><div class="v">Tienes <strong>Odoo</strong>, pero no funciona como debería. Nadie da seguimiento sistemático a los 338 leads.</div></div>
+  <div class="tag reveal r1">punto-de-partida</div>
+  <h2 class="reveal r2">Lo que hay hoy encima de la mesa</h2>
+  <div class="data-cards reveal r3">
+    <div class="dc"><div class="k">Producto</div><div class="v">Cursos de <b>480h</b>, mecánica y chapa/pintura, con prácticas en talleres locales</div></div>
+    <div class="dc"><div class="k">Precio</div><div class="v"><b>1.480€</b> al contado / <b>1.680€</b> con SeQura</div></div>
+    <div class="dc"><div class="k">Inversión Ads</div><div class="v">≈ <b>3.400€/mes</b> en Google Ads</div></div>
+    <div class="dc"><div class="k">Volumen</div><div class="v"><b>338</b> contactos/mes entre formulario, llamada y WhatsApp</div></div>
+    <div class="dc"><div class="k">Conversión actual</div><div class="v"><b>48</b> alumnos totales acumulados</div></div>
+    <div class="dc"><div class="k">CRM</div><div class="v">Odoo instalado, <b>sin conectar</b> al flujo real de leads</div></div>
   </div>
-  <span class="num">03 / 19 — LOS DATOS REALES</span>
+  <span class="num">03/19 · los datos</span>
 </section>
 
-<!-- 04 EL PROBLEMA -->
+<!-- 04 PROBLEMA -->
 <section id="s4">
-  <div class="tag reveal r1">El problema real</div>
-  <h2 class="reveal r2">338 leads al mes. <em>Se están perdiendo.</em></h2>
-  <p class="lead reveal r3">No es un problema de publicidad: pagas por cada uno de esos 338 contactos. El problema es lo que pasa <strong>después</strong> del clic — nadie responde a tiempo, nadie insiste con estructura, nadie mide qué canal convierte de verdad.</p>
-  <div class="grid-2 reveal r4" style="margin-top:50px;">
-    <div class="card"><p style="font-weight:700;margin-bottom:8px;color:var(--grey);">✕ Sin respuesta inmediata</p><p style="color:var(--grey-dim);font-size:13.5px;">El lead se enfría en los primeros minutos si nadie contesta.</p></div>
-    <div class="card"><p style="font-weight:700;margin-bottom:8px;color:var(--grey);">✕ Sin seguimiento estructurado</p><p style="color:var(--grey-dim);font-size:13.5px;">Un solo intento de contacto no es seguimiento, es suerte.</p></div>
-    <div class="card"><p style="font-weight:700;margin-bottom:8px;color:var(--grey);">✕ Sin trazabilidad por origen</p><p style="color:var(--grey-dim);font-size:13.5px;">No hay forma de saber qué campaña trae matrículas de verdad.</p></div>
-    <div class="card"><p style="font-weight:700;margin-bottom:8px;color:var(--grey);">✕ Todo manual</p><p style="color:var(--grey-dim);font-size:13.5px;">Depende de que una persona se acuerde. Y eso no escala.</p></div>
+  <div class="tag reveal r1">diagnostico</div>
+  <h2 class="reveal r2">El cuello de botella no es el tráfico. <span class="accent">Es el silencio después.</span></h2>
+  <p class="lead reveal r3">Pagas por cada uno de los 338 contactos. Lo que decide si se matriculan no pasa en el anuncio — pasa en los minutos y los días siguientes, y ahí mismo es donde hoy no hay nada automatizado.</p>
+  <div class="grid-2 reveal r4" style="margin-top:46px;">
+    <div class="card"><p style="font-weight:700;margin-bottom:8px;">Primera respuesta en horas, no en minutos</p><p style="color:var(--grey-dim);font-size:13.5px;">El interés se enfría rápido. Sin respuesta inmediata, el lead ya está mirando otra opción.</p></div>
+    <div class="card"><p style="font-weight:700;margin-bottom:8px;">Un intento, cero insistencia</p><p style="color:var(--grey-dim);font-size:13.5px;">La mayoría de matrículas llegan después de varios contactos, no del primero.</p></div>
+    <div class="card"><p style="font-weight:700;margin-bottom:8px;">Cero trazabilidad por canal</p><p style="color:var(--grey-dim);font-size:13.5px;">No hay forma de saber qué anuncio o campaña trae matrículas reales.</p></div>
+    <div class="card"><p style="font-weight:700;margin-bottom:8px;">Depende de que alguien se acuerde</p><p style="color:var(--grey-dim);font-size:13.5px;">Y eso, con 338 leads al mes, deja de funcionar a la segunda semana.</p></div>
   </div>
-  <span class="num">04 / 19 — EL PROBLEMA</span>
+  <span class="num">04/19 · el problema</span>
 </section>
 
 <!-- 05 AUDITORIA -->
 <section id="s5">
-  <div class="tag reveal r1">Auditoría técnica</div>
-  <h2 class="reveal r2">Qué falla hoy en tu Odoo y en tu flujo</h2>
+  <div class="tag reveal r1">auditoria.odoo</div>
+  <h2 class="reveal r2">Qué falla ahora mismo en tu Odoo</h2>
   <ul class="plain reveal r3">
-    <li><strong>Sin webhook de entrada.</strong> El formulario, la llamada y el WhatsApp no escriben en Odoo de forma automática y uniforme.</li>
-    <li><strong>Sin automatización de primera respuesta.</strong> El contacto espera horas — a veces, no responde nadie.</li>
-    <li><strong>Sin vista kanban ni embudo.</strong> No hay forma rápida de ver en qué fase está cada lead ni cuántos hay en cada una.</li>
-    <li><strong>Sin secuencias de nutrición.</strong> El que dice "ahora no" se pierde para siempre, sin ningún recordatorio.</li>
-    <li><strong>Sin atribución por canal.</strong> Imposible saber si el presupuesto de Ads está bien repartido entre campañas.</li>
+    <li><strong>No hay entrada automática de leads.</strong> Formulario, llamada y WhatsApp no escriben en el CRM de forma uniforme.</li>
+    <li><strong>No hay disparo de primera respuesta.</strong> Nada se envía solo al llegar un contacto nuevo.</li>
+    <li><strong>No hay vista de embudo.</strong> Nadie puede ver de un vistazo cuántos leads hay en cada fase.</li>
+    <li><strong>No hay recuperación de "ahora no".</strong> El que no responde a la primera queda enterrado.</li>
+    <li><strong>No hay atribución de campaña.</strong> El presupuesto de Ads se reparte a ciegas.</li>
   </ul>
-  <span class="num">05 / 19 — AUDITORÍA</span>
+  <span class="num">05/19 · auditoría</span>
 </section>
 
-<!-- 06 LO QUE MONTAMOS — flow -->
+<!-- 06 EL SISTEMA (flow) -->
 <section id="s6">
-  <div class="tag reveal r1">Lo que montamos</div>
-  <h2 class="reveal r2">El sistema, de principio a fin: <em>del anuncio a la matrícula</em></h2>
-  <p class="lead reveal r3" style="margin-top:0;">Cada contacto pasa por las mismas piezas y queda registrado. Nada depende de que alguien se acuerde.</p>
+  <div class="tag reveal r1">arquitectura</div>
+  <h2 class="reveal r2">El recorrido completo: <span class="accent">de clic a matrícula</span></h2>
+  <p class="lead reveal r3" style="margin-top:0;">Cada contacto, sea cual sea su origen, entra por el mismo embudo automatizado. Nada se pierde entre pasos.</p>
   <div class="flowrow reveal r4">
-    <div class="fcard"><div class="ic">①</div><div class="ti">Anuncio</div><div class="de">Google / Meta, sin tocarlo</div></div>
-    <div class="fcard"><div class="ic">②</div><div class="ti">Formulario / Llamada / WA</div><div class="de">Entrada unificada</div></div>
-    <div class="fcard hl"><div class="ic">③</div><div class="ti">Webhook → Odoo</div><div class="de">Ficha creada al instante</div><span class="badge">Auto</span></div>
-    <div class="fcard hl"><div class="ic">④</div><div class="ti">WhatsApp 1 min</div><div class="de">Respuesta automática</div><span class="badge">Auto</span></div>
-    <div class="fcard"><div class="ic">⑤</div><div class="ti">Panel Kanban</div><div class="de">Visión del embudo entero</div></div>
-    <div class="fcard hl"><div class="ic">⑥</div><div class="ti">15 toques / 14 días</div><div class="de">Email + WA + llamada</div><span class="badge">Auto</span></div>
-    <div class="fcard"><div class="ic">⑦</div><div class="ti">Cita contigo</div><div class="de">Con ficha completa delante</div></div>
-    <div class="fcard" style="border-color:var(--teal-light);"><div class="ic">✓</div><div class="ti">Matrícula</div><div class="de">Medida y atribuida al canal</div></div>
+    <div class="fcard"><div class="ic">01</div><div class="ti">Anuncio</div><div class="de">Google / Meta, intacto</div></div>
+    <div class="fcard"><div class="ic">02</div><div class="ti">Entrada</div><div class="de">Form / llamada / WA</div></div>
+    <div class="fcard hl"><div class="ic">03</div><div class="ti">Script propio</div><div class="de">Normaliza y escribe en Odoo</div><span class="badge">auto</span></div>
+    <div class="fcard hl"><div class="ic">04</div><div class="ti">Bot WhatsApp</div><div class="de">Responde en &lt;1 min</div><span class="badge">auto</span></div>
+    <div class="fcard"><div class="ic">05</div><div class="ti">Panel propio</div><div class="de">Embudo visual en tiempo real</div></div>
+    <div class="fcard hl"><div class="ic">06</div><div class="ti">Secuencia 14d</div><div class="de">Multicanal, sin huecos</div><span class="badge">auto</span></div>
+    <div class="fcard"><div class="ic">07</div><div class="ti">Cita contigo</div><div class="de">Con ficha completa</div></div>
+    <div class="fcard" style="border-color:var(--teal-light);"><div class="ic">✓</div><div class="ti">Matrícula</div><div class="de">Atribuida al canal de origen</div></div>
   </div>
-  <span class="num">06 / 19 — EL SISTEMA</span>
+  <span class="num">06/19 · el sistema</span>
 </section>
 
-<!-- 07 WHATSAPP -->
+<!-- 07 WHATSAPP DEMO ANIMADO -->
 <section id="s7">
-  <div class="tag reveal r1">Pieza 1 — Respuesta inmediata</div>
-  <h2 class="reveal r2">WhatsApp automático, <em>en el minuto</em></h2>
-  <p class="lead reveal r3" style="margin-top:0;">Las empresas que responden en menos de 5 minutos tienen muchas más probabilidades de cualificar al lead que las que tardan media hora.</p>
-  <div class="wa-mock reveal r4">
+  <div class="tag reveal r1">demo-01</div>
+  <h2 class="reveal r2">Así respondería el bot, <span class="accent">en tiempo real</span></h2>
+  <p class="lead reveal r3" style="margin-top:0;">Simulación de la conversación tal como la recibiría un contacto. Se reproduce sola al llegar a esta sección.</p>
+  <div class="wa-mock reveal r4" id="waDemo">
     <div class="wa-head">
       <div class="wa-avatar">AU</div>
-      <div><div class="name">Automotiva</div><div class="status">Sistema de atención · responde al momento</div></div>
+      <div><div class="name">Automotiva</div><div class="status">Bot de atención · tealdev</div></div>
     </div>
-    <div class="wa-body">
-      <div class="bubble in">Hola, he rellenado el formulario del curso de mecánica, ¿me podéis dar info?<span class="tm">14:02</span></div>
-      <div class="bubble out">¡Hola! Soy del equipo de Automotiva 👋 Vi que te interesa el curso de Mecánica (480h). ¿Prefieres empezar en 3 o 6 meses?<span class="tm">14:02 ✓✓</span></div>
-      <div class="bubble in">En 6 meses mejor<span class="tm">14:05</span></div>
-      <div class="bubble out">Perfecto. Te reservo una llamada de 10 min con un asesor para resolver dudas y ver plazas en talleres de tu zona. ¿Mañana a las 10:00 te viene bien?<span class="tm">14:05 ✓✓</span></div>
+    <div class="wa-body" id="waBody">
+      <div class="bubble in" data-text="Hola, he rellenado el formulario del curso de mecánica, ¿me podéis dar info?" data-time="14:02"></div>
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+      <div class="bubble out" data-text="¡Hola! Soy el asistente de Automotiva 👋 Vi que te interesa Mecánica (480h). ¿Prefieres empezar en 3 o 6 meses?" data-time="14:02 ✓✓"></div>
+      <div class="bubble in" data-text="En 6 meses mejor" data-time="14:05"></div>
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+      <div class="bubble out" data-text="Perfecto. Te reservo una llamada de 10 min con un asesor humano para resolver dudas y ver plazas en talleres de tu zona. ¿Mañana a las 10:00 te viene bien?" data-time="14:05 ✓✓"></div>
     </div>
   </div>
-  <p class="source reveal r4">Conversación de ejemplo. Los guiones se aprueban antes de activarse, y el mensaje siempre se identifica como automático.</p>
-  <span class="num">07 / 19 — WHATSAPP</span>
+  <p class="source reveal r4">Script de ejemplo. Cada guion se valida contigo antes de activarse — y se identifica siempre como automático.</p>
+  <span class="num">07/19 · demo whatsapp</span>
 </section>
 
-<!-- 08 KANBAN -->
+<!-- 08 PANEL -->
 <section id="s8">
-  <div class="tag reveal r1">Pieza 2 — Visión total</div>
-  <h2 class="reveal r2">El panel Kanban. <em>Todos los leads, un vistazo.</em></h2>
+  <div class="tag reveal r1">demo-02</div>
+  <h2 class="reveal r2">El panel: <span class="accent">tu embudo, en una pantalla</span></h2>
   <div class="kanban reveal r3">
-    <div class="kcol"><h4>Nuevo</h4>
-      <div class="kcard"><div class="src">Google Ads</div>Marta G. · Mecánica</div>
-      <div class="kcard"><div class="src">WhatsApp</div>David R. · Chapa y pintura</div>
-      <div class="kcard"><div class="src">Orgánico</div>Laura M.</div>
+    <div class="kcol"><h4>nuevo</h4>
+      <div class="kcard"><div class="src">google_ads</div>Marta G. · Mecánica</div>
+      <div class="kcard"><div class="src">whatsapp</div>David R. · Chapa/pintura</div>
+      <div class="kcard"><div class="src">organico</div>Laura M.</div>
     </div>
-    <div class="kcol"><h4>Contactado</h4>
-      <div class="kcard"><div class="src">Facebook</div>Iván P.</div>
-      <div class="kcard"><div class="src">Google Ads</div>Sergio T.</div>
+    <div class="kcol"><h4>contactado</h4>
+      <div class="kcard"><div class="src">facebook</div>Iván P.</div>
+      <div class="kcard"><div class="src">google_ads</div>Sergio T.</div>
     </div>
-    <div class="kcol"><h4>Cita agendada</h4>
-      <div class="kcard"><div class="src">WhatsApp</div>Noelia S.</div>
+    <div class="kcol"><h4>cita_agendada</h4>
+      <div class="kcard"><div class="src">whatsapp</div>Noelia S.</div>
     </div>
-    <div class="kcol"><h4>Matriculado</h4>
-      <div class="kcard"><div class="src">Google Ads</div>Rubén A. ✔</div>
+    <div class="kcol"><h4>matriculado</h4>
+      <div class="kcard"><div class="src">google_ads</div>Rubén A. ✓</div>
     </div>
   </div>
-  <p class="lead reveal r4">Por origen, por estado, por tasa de conversión a matrícula. Construido encima de los datos de Odoo, sin tocar su estructura.</p>
-  <span class="num">08 / 19 — EL PANEL</span>
+  <p class="lead reveal r4">Por origen, por fase, por tasa real de conversión. Construido sobre los datos de Odoo — no lo sustituye, lo hace legible.</p>
+  <span class="num">08/19 · el panel</span>
 </section>
 
 <!-- 09 FICHA -->
 <section id="s9">
-  <div class="tag reveal r1">Pieza 3 — La ficha</div>
-  <h2 class="reveal r2">Todo el contexto, <em>antes de descolgar</em></h2>
+  <div class="tag reveal r1">demo-03</div>
+  <h2 class="reveal r2">Lo que ves <span class="accent">antes de descolgar</span></h2>
   <div class="card reveal r3" style="max-width:600px;">
-    <p style="font-weight:700;font-size:20px;">Marta G.</p>
-    <p style="color:var(--grey-dim);font-size:12.5px;margin-bottom:18px;">Origen: Google Ads · Campaña "Mecánica 480h"</p>
+    <p style="font-weight:700;font-size:19px;font-family:'Space Grotesk',sans-serif;">Marta G.</p>
+    <p style="color:var(--grey-dim);font-size:12px;margin-bottom:16px;font-family:'JetBrains Mono',monospace;">origen: google_ads · campaña: mecanica_480h</p>
     <ul class="plain" style="margin-top:0;">
-      <li><strong>Curso de interés:</strong> Mecánica, 6 meses</li>
+      <li><strong>Interés:</strong> Mecánica, 6 meses</li>
       <li><strong>Primer contacto:</strong> hace 2 días</li>
-      <li><strong>Toques realizados:</strong> 1 WhatsApp, 1 email</li>
-      <li><strong>Próxima acción:</strong> llamada programada hoy 17:00</li>
-      <li style="border-bottom:none;"><strong>Estado:</strong> interesada, pendiente de confirmar fecha de inicio</li>
+      <li><strong>Toques hechos:</strong> 1 WhatsApp, 1 email</li>
+      <li><strong>Próxima acción:</strong> llamada hoy 17:00</li>
+      <li style="border-bottom:none;"><strong>Estado:</strong> interesada, falta confirmar inicio</li>
     </ul>
   </div>
-  <span class="num">09 / 19 — LA FICHA</span>
+  <span class="num">09/19 · la ficha</span>
 </section>
 
 <!-- 10 AUTOMATIZACIONES -->
 <section id="s10">
-  <div class="tag reveal r1">Pieza 4 — Automatizaciones</div>
-  <h2 class="reveal r2">Un flujo distinto <em>según cómo llegó</em> el lead</h2>
+  <div class="tag reveal r1">logica-condicional</div>
+  <h2 class="reveal r2">Un camino distinto <span class="accent">según cómo llegó</span></h2>
   <div class="grid-3 reveal r3">
-    <div class="card">
-      <p style="font-weight:700;color:var(--teal-light);margin-bottom:12px;">Formulario web</p>
-      <p style="font-size:13.5px;color:var(--grey-dim);">Webhook → ficha en Odoo → WhatsApp automático en 1 min → si no responde en 1h, tarea de llamada → entra en secuencia de 14 días.</p>
-    </div>
-    <div class="card">
-      <p style="font-weight:700;color:var(--teal-light);margin-bottom:12px;">WhatsApp directo</p>
-      <p style="font-size:13.5px;color:var(--grey-dim);">IA responde preguntas básicas → cualifica interés → crea/actualiza ficha en Odoo → entra en secuencia si no agenda cita.</p>
-    </div>
-    <div class="card">
-      <p style="font-weight:700;color:var(--teal-light);margin-bottom:12px;">Llamada entrante</p>
-      <p style="font-size:13.5px;color:var(--grey-dim);">Se registra en Odoo al colgar → WhatsApp de resumen automático → recordatorio si no hay cita confirmada en 48h.</p>
+    <div class="card"><p style="font-weight:700;color:var(--teal-light);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;">Formulario web</p><p style="font-size:13px;color:var(--grey-dim);">Entra por nuestro endpoint → se crea la ficha en Odoo → bot de WhatsApp en &lt;1 min → si no hay respuesta en 1h, se genera tarea de llamada → arranca secuencia de 14 días.</p></div>
+    <div class="card"><p style="font-weight:700;color:var(--teal-light);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;">WhatsApp directo</p><p style="font-size:13px;color:var(--grey-dim);">El bot cualifica con preguntas básicas → actualiza o crea la ficha → si no agenda cita, entra en la misma secuencia de seguimiento.</p></div>
+    <div class="card"><p style="font-weight:700;color:var(--teal-light);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;">Llamada entrante</p><p style="font-size:13px;color:var(--grey-dim);">Queda registrada al colgar → WhatsApp de resumen automático → recordatorio si no hay cita confirmada en 48h.</p></div>
+  </div>
+  <div class="term reveal r4">
+    <div class="term-bar"><span></span><span></span><span></span><div class="lbl">flujo_entrada.js</div></div>
+    <div class="term-body">
+<span class="c">// script propio — resumen del flujo de entrada</span><br>
+<span class="k">on</span>(<span class="s">'nuevo_lead'</span>, <span class="k">async</span> (lead) <span class="k">=&gt;</span> {<br>
+&nbsp;&nbsp;<span class="k">await</span> odoo.crear(<span class="s">'crm.lead'</span>, lead);<br>
+&nbsp;&nbsp;<span class="k">await</span> whatsapp.enviar(lead.tel, plantilla.bienvenida);<br>
+&nbsp;&nbsp;<span class="k">await</span> esperar(<span class="s">'1h'</span>);<br>
+&nbsp;&nbsp;<span class="k">if</span> (!lead.respondio) odoo.crearTarea(<span class="s">'Llamar'</span>);<br>
+&nbsp;&nbsp;secuencia.iniciar(lead, <span class="s">'14_dias'</span>);<br>
+});
     </div>
   </div>
-  <div class="codebox reveal r4">
-<span class="c">// n8n — trigger de entrada, resumido</span><br>
-<span class="k">Webhook</span> (POST /lead) <span class="c">→</span><br>
-&nbsp;&nbsp;<span class="k">Odoo.create</span>(<span class="s">'crm.lead'</span>, {source, phone, course}) <span class="c">→</span><br>
-&nbsp;&nbsp;<span class="k">WhatsApp.send</span>(template: <span class="s">'bienvenida_v2'</span>) <span class="c">→</span><br>
-&nbsp;&nbsp;<span class="k">Wait</span>(1h) <span class="c">→ if no_response:</span> <span class="k">Odoo.createTask</span>(<span class="s">'Llamar'</span>) <span class="c">→</span><br>
-&nbsp;&nbsp;<span class="k">Schedule</span>(secuencia_14_dias)
-  </div>
-  <span class="num">10 / 19 — AUTOMATIZACIONES</span>
+  <span class="num">10/19 · automatizaciones</span>
 </section>
 
 <!-- 11 15 TOQUES -->
 <section id="s11">
-  <div class="tag reveal r1">Pieza 5 — El seguimiento</div>
-  <h2 class="reveal r2">15 toques en 14 días. <em>Nada librado a la memoria.</em></h2>
+  <div class="tag reveal r1">secuencia</div>
+  <h2 class="reveal r2">14 días, <span class="accent">ningún hueco en blanco</span></h2>
   <div class="flowrow reveal r3" style="grid-template-columns:repeat(7,1fr);">
-    <div class="fcard hl"><div class="ti">Día 1</div><div class="de">WhatsApp + Email</div></div>
+    <div class="fcard hl"><div class="ti">Día 1</div><div class="de">WA + Email</div></div>
     <div class="fcard"><div class="ti">Día 2</div><div class="de">Llamada</div></div>
     <div class="fcard"><div class="ti">Día 4</div><div class="de">Email</div></div>
     <div class="fcard hl"><div class="ti">Día 6</div><div class="de">WhatsApp</div></div>
@@ -438,130 +389,150 @@
     <div class="fcard hl"><div class="ti">Día 11</div><div class="de">WhatsApp</div></div>
     <div class="fcard" style="border-color:var(--teal-light);"><div class="ti">Día 14</div><div class="de">Llamada + WA + Email</div></div>
   </div>
-  <p class="lead reveal r4">6 emails + 6 WhatsApp + 3 llamadas. Automatizado en el disparo, con tono humano en el contenido — y el seguimiento completo ya no depende de que nadie se acuerde.</p>
-  <span class="num">11 / 19 — LOS 15 TOQUES</span>
+  <p class="lead reveal r4">6 WhatsApp + 6 emails + 3 llamadas, disparados solos por el script. El contenido se escribe con tono humano — lo automático es que nunca falte.</p>
+  <span class="num">11/19 · la secuencia</span>
 </section>
 
 <!-- 12 NUTRICION -->
 <section id="s12">
-  <div class="tag reveal r1">Pieza 6 — El "ahora no"</div>
-  <h2 class="reveal r2">El lead que dice <em>"ahora no"</em> no se cierra. Se nutre.</h2>
-  <p class="lead reveal r3">Después de los 14 días intensivos, el contacto entra en una secuencia de nutrición a largo plazo: contenido de valor, recordatorio de nueva convocatoria, casos de alumnos reales. Hasta que decide matricularse — o hasta que pide salir.</p>
+  <div class="tag reveal r1">reengagement</div>
+  <h2 class="reveal r2">El <span class="accent">"ahora no"</span> no se archiva</h2>
+  <p class="lead reveal r3">Pasados los 14 días intensivos, el contacto entra en una secuencia de nutrición a largo plazo — contenido, recordatorio de convocatoria, casos reales — hasta que se matricula o pide salir. Nadie vuelve a quedar en silencio por error.</p>
   <div class="flowrow reveal r4" style="grid-template-columns:repeat(3,1fr);max-width:800px;">
-    <div class="fcard hl"><div class="ti">14 días intensivos</div><div class="de">15 toques estructurados</div></div>
+    <div class="fcard hl"><div class="ti">14 días</div><div class="de">Secuencia intensiva</div></div>
     <div class="fcard"><div class="ti">Nutrición mensual</div><div class="de">Contenido + recordatorios</div></div>
-    <div class="fcard" style="border-color:var(--teal-light);"><div class="ti">Matrícula cuando decide</div><div class="de">O baja voluntaria</div></div>
+    <div class="fcard" style="border-color:var(--teal-light);"><div class="ti">Matrícula o baja</div><div class="de">Decisión del lead, no del olvido</div></div>
   </div>
-  <span class="num">12 / 19 — NUTRICIÓN</span>
+  <span class="num">12/19 · nutrición</span>
 </section>
 
-<!-- 13 POR QUE FUNCIONA -->
+<!-- 13 LIMITES HONESTOS -->
 <section id="s13">
-  <div class="tag reveal r1">Por qué funciona</div>
-  <h2 class="reveal r2">No es intuición. <em>Es lo que dicen los datos.</em></h2>
-  <div class="reveal r3" style="font-family:'Fraunces',serif;font-weight:500;font-style:italic;font-size:clamp(19px,2.2vw,28px);max-width:900px;border-left:2px solid var(--teal);padding-left:28px;color:var(--white);">"Las empresas que contactan a un lead en los primeros 5 minutos tienen muchas más probabilidades de cualificarlo que las que tardan media hora."</div>
-  <div class="source reveal r3">— Harvard Business Review, Lead Response Management Study</div>
-  <div class="reveal r4" style="margin-top:44px;font-family:'Fraunces',serif;font-weight:500;font-style:italic;font-size:clamp(19px,2.2vw,28px);max-width:900px;border-left:2px solid var(--teal);padding-left:28px;color:var(--white);">"El 80% de las ventas requieren al menos 5 puntos de contacto tras el primero. El 44% de los comerciales abandona después del primero."</div>
-  <div class="source reveal r4">— MIT Sales Process Research</div>
-  <span class="num">13 / 19 — LA EVIDENCIA</span>
-</section>
-
-<!-- 14 CALCULADORA -->
-<section class="center" id="s14">
-  <div class="tag reveal r1">La cuenta</div>
-  <h2 class="reveal r2" style="text-align:center;">Con seguimiento real, <em>los números cambian solos</em></h2>
-  <div class="grid-3 reveal r3" style="margin-top:50px;max-width:1000px;">
-    <div class="card"><div class="bignum" style="font-size:42px;">338</div><p style="color:var(--grey-dim);font-size:13px;margin-top:10px;">Leads / mes (los que ya tienes)</p></div>
-    <div class="card"><div class="bignum" style="font-size:42px;">2<span class="u">%</span></div><p style="color:var(--grey-dim);font-size:13px;margin-top:10px;">Conversión realista solo con seguimiento</p></div>
-    <div class="card"><div class="bignum" style="font-size:42px;">≈7</div><p style="color:var(--grey-dim);font-size:13px;margin-top:10px;">Alumnos extra / mes</p></div>
+  <div class="tag reveal r1">limites.md</div>
+  <h2 class="reveal r2">Lo que sí automatizamos. <span class="accent">Y lo que no.</span></h2>
+  <p class="lead reveal r3" style="margin-top:0;">No prometemos lo que no podemos dar. Lo decimos claro, para que decidas con información real.</p>
+  <div class="limits reveal r4">
+    <div class="no">
+      <h4>No es nuestro</h4>
+      <ul>
+        <li>— La conversación de cierre con el alumno</li>
+        <li>— La decisión comercial de bajar o subir precio</li>
+        <li>— El trato humano en la llamada final</li>
+        <li>— Gestionar tus campañas de Ads</li>
+      </ul>
+    </div>
+    <div class="si">
+      <h4>Sí es nuestro</h4>
+      <ul>
+        <li>— Que nadie se quede sin respuesta</li>
+        <li>— Que el seguimiento no dependa de la memoria</li>
+        <li>— Que sepas qué canal convierte de verdad</li>
+        <li>— Chatbots, scripts y paneles a medida</li>
+      </ul>
+    </div>
   </div>
-  <p class="lead reveal r4">No hace falta un lead más. Hace falta no perder los que ya llegan.</p>
-  <span class="num">14 / 19 — LA CUENTA</span>
+  <span class="num">13/19 · límites honestos</span>
 </section>
 
-<!-- 15 COMPARATIVA -->
-<section id="s15">
-  <div class="tag reveal r1">Comparación honesta</div>
-  <h2 class="reveal r2">Lo que hacemos vs. <em>una agencia de publicidad completa</em></h2>
+<!-- 14 POR QUE FUNCIONA -->
+<section id="s14">
+  <div class="tag reveal r1">evidencia</div>
+  <h2 class="reveal r2">No es una apuesta. <span class="accent">Es lo que miden los datos.</span></h2>
+  <div class="card reveal r3" style="max-width:820px;">
+    <p style="font-size:16px;color:var(--white);">Contactar a un lead en los primeros 5 minutos multiplica muchas veces la probabilidad de cualificarlo frente a esperar media hora.</p>
+    <p class="source">— Harvard Business Review, Lead Response Management Study</p>
+  </div>
+  <div class="card reveal r4" style="max-width:820px;margin-top:18px;">
+    <p style="font-size:16px;color:var(--white);">El 80% de las ventas necesitan al menos 5 puntos de contacto después del primero. La mayoría de comerciales abandona tras el primero.</p>
+    <p class="source">— MIT Sales Process Research</p>
+  </div>
+  <span class="num">14/19 · la evidencia</span>
+</section>
+
+<!-- 15 CALCULADORA -->
+<section class="center" id="s15">
+  <div class="tag reveal r1">proyección</div>
+  <h2 class="reveal r2" style="text-align:center;">Con el mismo tráfico, <span class="accent">otro resultado</span></h2>
+  <div class="grid-3 reveal r3" style="margin-top:46px;max-width:1000px;">
+    <div class="card"><div class="bignum" style="font-size:40px;">338</div><p style="color:var(--grey-dim);font-size:12.5px;margin-top:10px;">leads/mes, los mismos de hoy</p></div>
+    <div class="card"><div class="bignum" style="font-size:40px;">2<span class="u">%</span></div><p style="color:var(--grey-dim);font-size:12.5px;margin-top:10px;">conversión realista solo con seguimiento</p></div>
+    <div class="card"><div class="bignum" style="font-size:40px;">≈7</div><p style="color:var(--grey-dim);font-size:12.5px;margin-top:10px;">alumnos extra al mes, sin gastar más en Ads</p></div>
+  </div>
+  <p class="lead reveal r4">No hace falta más tráfico. Hace falta no perder el que ya pagas.</p>
+  <span class="num">15/19 · proyección</span>
+</section>
+
+<!-- 16 COMPARATIVA -->
+<section id="s16">
+  <div class="tag reveal r1">comparativa</div>
+  <h2 class="reveal r2">Nosotros vs. <span class="accent">una agencia de publicidad completa</span></h2>
   <div class="vs reveal r3">
     <div class="them">
-      <h3>Agencia de publicidad completa</h3>
+      <h3>paquete_completo.agencia</h3>
       <ul>
         <li>Gestión de campañas (Google / Meta)</li>
         <li>Landing pages nuevas</li>
         <li>Automatización + CRM</li>
-        <li>Paquete cerrado, todo incluido</li>
+        <li>Todo cerrado en un único paquete</li>
       </ul>
     </div>
     <div class="us">
-      <h3>Tealdev</h3>
+      <h3>tealdev.stack</h3>
       <ul>
         <li>No tocamos tu publicidad actual</li>
-        <li>Trabajamos sobre el Odoo que ya tienes</li>
-        <li>Automatización + CRM — nuestra especialidad</li>
+        <li>Construimos sobre el Odoo que ya tienes</li>
+        <li>Automatización + bots — nuestra única especialidad</li>
         <li>Solo la pieza que falta, sin paquete forzado</li>
       </ul>
     </div>
   </div>
-  <p class="lead reveal r4">No competimos por ser más baratos sin más. Competimos porque hacemos <strong>una cosa</strong> y la hacemos bien: que ningún lead se pierda.</p>
-  <span class="num">15 / 19 — COMPARATIVA</span>
+  <p class="lead reveal r4">No competimos en precio por competir. Competimos porque hacemos una sola cosa — y la hacemos a fondo: que ningún lead se pierda.</p>
+  <span class="num">16/19 · comparativa</span>
 </section>
 
-<!-- 16 STACK -->
-<section id="s16">
-  <div class="tag reveal r1">El stack técnico</div>
-  <h2 class="reveal r2">Sin cambiar <em>nada</em> de lo que ya tienes</h2>
+<!-- 17 STACK -->
+<section id="s17">
+  <div class="tag reveal r1">stack.técnico</div>
+  <h2 class="reveal r2">Sin tocar <span class="accent">nada de lo que ya tienes</span></h2>
   <div class="stack-row reveal r3">
-    <div class="stack-chip"><b>n8n</b> — orquestación de workflows</div>
-    <div class="stack-chip"><b>Odoo</b> — tu CRM actual, vía API</div>
-    <div class="stack-chip"><b>WABA</b> — WhatsApp Business API oficial</div>
-    <div class="stack-chip"><b>SMTP transaccional</b> — email de seguimiento</div>
-    <div class="stack-chip"><b>Panel Kanban</b> — a medida, sobre tus datos</div>
+    <div class="stack-chip"><b>Scripts propios</b> — Node / Python</div>
+    <div class="stack-chip"><b>Odoo</b> — tu CRM, vía API</div>
+    <div class="stack-chip"><b>WhatsApp Business API</b> — oficial</div>
+    <div class="stack-chip"><b>Email transaccional</b></div>
+    <div class="stack-chip"><b>Panel propio</b> — sobre tus datos</div>
   </div>
   <div class="security-note reveal r4">
-    <strong style="color:var(--teal-light);">Seguridad.</strong> Las automatizaciones y el chatbot se montan con buenas prácticas: credenciales en gestor de secretos (no en texto plano), tráfico cifrado en tránsito (TLS), webhooks firmados y validados, acceso a Odoo con permisos mínimos necesarios. No es el foco de esta propuesta, pero es la base técnica en todo lo que construimos.
+    <strong style="color:var(--teal-light);">Seguridad.</strong> Credenciales en gestor de secretos, nunca en texto plano. Tráfico cifrado en tránsito (TLS). Webhooks firmados y validados. Acceso a Odoo con los permisos mínimos necesarios, nada más. No es el foco de esta propuesta, pero es la base en todo lo que construimos — y algo que seguimos estudiando a fondo.
   </div>
-  <span class="num">16 / 19 — EL STACK</span>
+  <span class="num">17/19 · el stack</span>
 </section>
 
-<!-- 17 COMO TRABAJAMOS -->
-<section id="s17">
-  <div class="tag reveal r1">Cómo es trabajar con nosotros</div>
-  <h2 class="reveal r2">Puesta en marcha <em>sin fricción</em></h2>
+<!-- 18 COMO TRABAJAMOS -->
+<section id="s18">
+  <div class="tag reveal r1">onboarding</div>
+  <h2 class="reveal r2">Puesta en marcha <span class="accent">sin fricción</span></h2>
   <div class="steps reveal r3">
-    <div class="step-row"><div class="step-n">1</div><div><p style="font-weight:700;">Diagnóstico del Odoo actual</p><p style="color:var(--grey-dim);font-size:13.5px;">Revisamos qué hay y qué falta conectar. Sin tocar nada todavía.</p></div></div>
-    <div class="step-row"><div class="step-n">2</div><div><p style="font-weight:700;">Conexión y automatizaciones</p><p style="color:var(--grey-dim);font-size:13.5px;">WhatsApp, kanban y secuencias montados sobre tu sistema.</p></div></div>
-    <div class="step-row"><div class="step-n">3</div><div><p style="font-weight:700;">Pruebas con leads reales</p><p style="color:var(--grey-dim);font-size:13.5px;">Validamos el flujo completo antes de dejarlo en marcha.</p></div></div>
-    <div class="step-row"><div class="step-n">4</div><div><p style="font-weight:700;">En marcha y con soporte</p><p style="color:var(--grey-dim);font-size:13.5px;">Ajustes, mejoras y seguimiento continuo.</p></div></div>
+    <div class="step-row"><div class="step-n">01</div><div><p style="font-weight:700;font-family:'Space Grotesk',sans-serif;">Diagnóstico del Odoo actual</p><p style="color:var(--grey-dim);font-size:13px;">Revisamos qué hay y qué falta conectar. Sin tocar nada todavía.</p></div></div>
+    <div class="step-row"><div class="step-n">02</div><div><p style="font-weight:700;font-family:'Space Grotesk',sans-serif;">Scripts y automatizaciones</p><p style="color:var(--grey-dim);font-size:13px;">WhatsApp, panel y secuencias montados sobre tu sistema actual.</p></div></div>
+    <div class="step-row"><div class="step-n">03</div><div><p style="font-weight:700;font-family:'Space Grotesk',sans-serif;">Pruebas con leads reales</p><p style="color:var(--grey-dim);font-size:13px;">Validamos el flujo completo antes de dejarlo activo de verdad.</p></div></div>
+    <div class="step-row"><div class="step-n">04</div><div><p style="font-weight:700;font-family:'Space Grotesk',sans-serif;">En marcha, con soporte</p><p style="color:var(--grey-dim);font-size:13px;">Ajustes, mejoras y mantenimiento continuo.</p></div></div>
   </div>
   <p class="lead reveal r4">Tus datos siguen siendo tuyos. Tu CRM sigue siendo el mismo. Solo añadimos lo que falta.</p>
-  <span class="num">17 / 19 — CÓMO TRABAJAMOS</span>
-</section>
-
-<!-- 18 ALCANCE -->
-<section id="s18">
-  <div class="tag reveal r1">Alcance del proyecto</div>
-  <h2 class="reveal r2">Esto se construye por piezas, <em>a tu medida</em></h2>
-  <p class="lead reveal r3" style="margin-top:0;">No todas las empresas necesitan lo mismo. Algunas piezas se montan solas, otras en conjunto. El alcance y el presupuesto se ajustan según qué piezas elijas y qué tan a fondo quieras llegar.</p>
-  <div class="grid-2 reveal r4" style="margin-top:44px;">
-    <div class="card"><p style="font-weight:700;color:var(--teal-light);">Imprescindible</p><p style="color:var(--grey-dim);font-size:13.5px;margin-top:8px;">Conexión Odoo + WhatsApp automático + panel Kanban</p></div>
-    <div class="card"><p style="font-weight:700;color:var(--teal-light);">Ampliable</p><p style="color:var(--grey-dim);font-size:13.5px;margin-top:8px;">Secuencias de 14 días, nutrición a largo plazo, reporting avanzado, integraciones adicionales</p></div>
-  </div>
-  <span class="num">18 / 19 — ALCANCE</span>
+  <span class="num">18/19 · cómo trabajamos</span>
 </section>
 
 <!-- 19 CTA -->
 <section class="center" id="s19">
   <div class="reveal r1 center" style="display:flex;flex-direction:column;align-items:center;">
-    <div class="pill">Próximo paso</div>
-    <h2 style="text-align:center;">Hablemos de qué piezas <em>necesita Automotiva</em></h2>
-    <p class="lead">Preparamos una propuesta a medida según el alcance que decidáis, con cada parte del sistema desglosada.</p>
+    <div class="pill">siguiente_paso</div>
+    <h2 style="text-align:center;">Hablemos de qué piezas <span class="accent">necesita Automotiva</span></h2>
+    <p class="lead">Cada pieza de este sistema se puede montar por separado o en conjunto. Preparamos una propuesta a medida según lo que decidáis.</p>
     <div class="cta-row">
       <div class="cta-btn">Hablemos</div>
       <div class="cta-btn ghost">Ver el stack técnico</div>
     </div>
   </div>
-  <span class="num">19 / 19 — SIGUIENTE PASO</span>
+  <span class="num">19/19 · siguiente paso</span>
 </section>
 
 <script>
@@ -569,17 +540,14 @@
   const nav = document.getElementById('sidenav');
   sections.forEach(s=>{
     const d = document.createElement('div');
-    d.className='dot';
-    d.dataset.target = s.id;
+    d.className='dot'; d.dataset.target = s.id;
     nav.appendChild(d);
   });
   const dots = [...nav.children];
 
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
-      }
+      if(e.isIntersecting) e.target.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
     });
   },{threshold:0.2});
   sections.forEach(s=>io.observe(s));
@@ -594,10 +562,45 @@
     });
   },{threshold:0.5});
   sections.forEach(s=>navIO.observe(s));
-
   dots.forEach(d=>d.addEventListener('click',()=>{
     document.getElementById(d.dataset.target).scrollIntoView({behavior:'smooth'});
   }));
+
+  // WhatsApp typing demo, plays once when visible
+  let waPlayed = false;
+  const waIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting && !waPlayed){
+        waPlayed = true;
+        playWaDemo();
+      }
+    });
+  },{threshold:0.4});
+  const waEl = document.getElementById('waDemo');
+  if(waEl) waIO.observe(waEl);
+
+  function playWaDemo(){
+    const body = document.getElementById('waBody');
+    const nodes = [...body.children];
+    let delay = 300;
+    nodes.forEach(node=>{
+      if(node.classList.contains('typing-dots')){
+        setTimeout(()=>node.classList.add('show'), delay);
+        delay += 900;
+        setTimeout(()=>node.classList.remove('show'), delay);
+      } else {
+        const bubble = node;
+        setTimeout(()=>{
+          bubble.textContent = bubble.dataset.text;
+          const tm = document.createElement('span');
+          tm.className='tm'; tm.textContent = bubble.dataset.time;
+          bubble.appendChild(tm);
+          bubble.classList.add('show');
+        }, delay);
+        delay += 700;
+      }
+    });
+  }
 </script>
 
 </body>
