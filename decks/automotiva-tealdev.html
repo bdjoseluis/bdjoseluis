@@ -285,6 +285,15 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .ph.opt{border-style:dashed;background:transparent}
 .ph.opt .k{color:#c07a2c}
 
+/* ---------- research ---------- */
+.cmp{width:100%;border-collapse:collapse;font-size:13.5px}
+.cmp th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 10px 10px 0;font-weight:500}
+.cmp td{padding:12px 10px 12px 0;border-top:1px solid var(--line);color:var(--muted);vertical-align:top}
+.cmp tr.me td{color:var(--fg);font-weight:600}
+.cmp tr.me td:first-child{color:var(--acc)}
+.fact .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--acc);margin-bottom:8px}
+.fact p{font-size:14px;color:var(--muted)}
+.fact p b{color:var(--fg)}
 /* ---------- misc ---------- */
 .cta{display:inline-flex;align-items:center;gap:10px;background:var(--acc);color:#06201c;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;padding:16px 30px;border-radius:12px;margin-top:34px;box-shadow:0 20px 40px -18px rgba(45,212,191,.7)}
 
@@ -345,6 +354,52 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
       <div class="stat a" style="--d:.4s"><div class="big"><span class="count" data-to="48">0</span></div><div class="lbl">alumnos a día de hoy<br>(480 h · 1.480 € / 1.680 € con SeQura)</div></div>
     </div>
     <p class="lead a mt" style="--d:.55s">La publicidad <b>ya funciona</b>: genera demanda. El hueco está en lo que pasa después — entre que alguien escribe y que alguien se matricula. Ahí es donde entramos nosotros.</p>
+  </div>
+</section>
+
+
+<!-- ============ INVESTIGACIÓN ============ -->
+<section class="slide t-deep">
+  <div class="gridbg"></div>
+  <div class="inner">
+    <div class="tag a"><span class="n"></span> lo que hemos investigado</div>
+    <h2 class="a" style="--d:.1s">Antes de proponer nada, <span class="acc">miramos lo que ya hacéis</span></h2>
+    <div class="row3 mt">
+      <div class="card fact a" style="--d:.2s"><div class="k">3 líneas, no 2</div><p><b>Electromecánica del automóvil, Chapa y Pintura y Mecánica de motos.</b> El bot y el panel las tratan por separado desde el primer día.</p></div>
+      <div class="card fact a" style="--d:.27s"><div class="k">prácticas desde el minuto uno</div><p><b>480 h en talleres y concesionarios oficiales</b> de la localidad del alumno, en toda España.</p></div>
+      <div class="card fact a" style="--d:.34s"><div class="k">flexibilidad</div><p>Se puede terminar <b>en 3 meses</b> o hacer <b>solo de mañanas</b>. Sin estudios previos.</p></div>
+      <div class="card fact a" style="--d:.41s"><div class="k">todo incluido</div><p><b>Ropa de trabajo, seguro de RC y accidentes y material.</b> Argumento de venta que hoy nadie repite por WhatsApp.</p></div>
+      <div class="card fact a" style="--d:.48s"><div class="k">certificado</div><p><b>Certificado privado de prácticas</b> firmado y sellado por el jefe de taller y la escuela.</p></div>
+      <div class="card fact a" style="--d:.55s"><div class="k">captación</div><p>Dos landings de campaña (<b>mecánica</b> y <b>chapa y pintura</b>) con <b>200 € de descuento "solo este mes"</b>, y un blog con artículos y testimonios.</p></div>
+    </div>
+    <p class="note a" style="--d:.65s">// fuente: automotiva.eu, cursomecanica.automotiva.eu y cursochapaypintura.automotiva.eu · octubre 2026</p>
+  </div>
+</section>
+
+<!-- ============ MERCADO ============ -->
+<section class="slide t-light">
+  <div class="inner">
+    <div class="tag a"><span class="n"></span> el mercado</div>
+    <h2 class="a" style="--d:.1s">Hay más demanda que mecánicos. <span class="acc">Y sois más baratos que el líder.</span></h2>
+    <div class="cols mt" style="align-items:start">
+      <div class="a" style="--d:.2s">
+        <div class="big"><span class="count" data-to="20000">0</span></div>
+        <div class="stat"><div class="lbl">puestos sin cubrir en talleres españoles · sept. 2026</div></div>
+        <p class="lead" style="margin-top:18px">Y no solo mecánicos: también <b>chapistas y pintores</b>. Hay talleres que tardan tres meses en encontrar un chapista. Es el mejor argumento de venta que tenéis — y hoy no llega a ningún lead.</p>
+        <p class="note">// elEconomista, Telemadrid, Híbridos y Eléctricos · septiembre 2026</p>
+      </div>
+      <div class="card a" style="--d:.3s">
+        <table class="cmp">
+          <tr><th>centro</th><th>curso</th><th>precio</th><th>reseñas</th></tr>
+          <tr class="me"><td>Automotiva</td><td>480 h prácticas</td><td>1.480 €</td><td>no visibles</td></tr>
+          <tr><td>Grupo Atrium</td><td>Mecánica y electricidad · Madrid/Bcn</td><td>2.195 €</td><td>4,7★ · 1.067</td></tr>
+          <tr><td>Grupo Atrium</td><td>Motos · 480 h</td><td>1.995 €</td><td>—</td></tr>
+          <tr><td>ITA</td><td>500 h · 6 meses</td><td>consultar</td><td>5,0★ · 1</td></tr>
+        </table>
+        <p class="note">// precios públicos en educaweb y emagister; pueden haber cambiado</p>
+      </div>
+    </div>
+    <p class="lead a mt" style="--d:.45s">El producto es bueno y el precio compite. Lo que os falta es <b>velocidad de respuesta</b> y <b>prueba social</b>. Las dos cosas se automatizan.</p>
   </div>
 </section>
 
@@ -484,6 +539,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
           <li><b>Si no sabe, no inventa:</b> pasa la conversación a una persona</li>
           <li><b>Se presenta como automático,</b> siempre</li>
           <li><b>Agenda la llamada</b> en huecos reales de tu calendario</li>
+          <li><b>Aprende de vuestra web y blog:</b> cursos, condiciones, preguntas frecuentes</li>
           <li><b>Todo queda en la ficha</b> de Odoo, palabra por palabra</li>
         </ul>
         <p class="note a" style="--d:.4s">// conversación de ejemplo · se reproduce sola</p>
@@ -493,15 +549,15 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
           <div class="wa-h"><div class="wa-av">AU</div><div><div class="nm">Automotiva · Escuela</div><div class="st" id="waStatus">en línea</div></div></div>
           <div class="wa-b" id="wa1">
             <div class="day">DOMINGO</div>
-            <div class="bub in" data-t="buenas, cuánto cuesta el de chapa y pintura? trabajo por las mañanas" data-h="23:47"></div>
+            <div class="bub in" data-t="buenas, cuánto cuesta el de chapa y pintura? trabajo por las tardes" data-h="23:47"></div>
             <div class="typing"><span></span><span></span><span></span></div>
-            <div class="bub out" data-t="¡Hola! Soy el asistente automático de Automotiva 🤖 Chapa y Pintura son 480 h: 1.480 € al contado o 1.680 € financiado con SeQura. ¿Te encaja más hacerlo en 3 o en 6 meses?" data-h="23:47"></div>
-            <div class="bub in" data-t="6 meses. y las prácticas dónde?" data-h="23:48"></div>
+            <div class="bub out" data-t="¡Hola! Soy el asistente automático de Automotiva 🤖 Chapa y Pintura son 480 h de prácticas en un taller de tu zona: 1.480 € al contado o 1.680 € con SeQura. Y hay modalidad solo de mañanas, así que te encaja con el trabajo. ¿En 3 o en 6 meses?" data-h="23:47"></div>
+            <div class="bub in" data-t="6 meses. incluye algo más?" data-h="23:48"></div>
             <div class="typing"><span></span><span></span><span></span></div>
-            <div class="bub out" data-t="En un taller de tu zona 🔧 Para que un asesor te lo confirme, ¿te llamamos el lunes a las 10:00 o a las 17:00?" data-h="23:48"></div>
-            <div class="bub in" data-t="17:00 mejor" data-h="23:49"></div>
+            <div class="bub out" data-t="Ropa de trabajo, seguro y material incluidos 🔧 Al terminar, certificado firmado por el jefe de taller. ¿Te llama un asesor el lunes a las 11:00 o a las 13:00?" data-h="23:48"></div>
+            <div class="bub in" data-t="11:00" data-h="23:49"></div>
             <div class="typing"><span></span><span></span><span></span></div>
-            <div class="bub out" data-t="Hecho ✅ Lunes 17:00. Te mando un recordatorio antes. ¡Buenas noches!" data-h="23:49"></div>
+            <div class="bub out" data-t="Hecho ✅ Lunes 11:00. Te mando un recordatorio antes. ¡Buenas noches!" data-h="23:49"></div>
           </div>
         </div>
       </div>
@@ -521,12 +577,12 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
         <div class="kpi"><div class="v"><span class="count" data-to="23">0</span></div><div class="l">citas agendadas</div></div>
         <div class="kpi"><div class="v" style="color:var(--acc)"><span class="count" data-to="6">0</span></div><div class="l">matrículas</div></div>
       </div>
-      <div class="filters"><span class="on">todos</span><span>google</span><span>meta</span><span>whatsapp</span><span>orgánico</span><span>mecánica</span><span>chapa/pintura</span></div>
+      <div class="filters"><span class="on">todos</span><span>google</span><span>meta</span><span>whatsapp</span><span>orgánico</span><span>mecánica</span><span>chapa/pintura</span><span>motos</span></div>
       <div class="kb">
         <div class="kcol" id="k1"><h4>nuevo <span>12</span></h4>
           <div class="kc" id="kmove"><div class="src"><span>google · mecánica</span><span>87</span></div>Lucía P. · 6 meses</div>
           <div class="kc"><div class="src"><span>whatsapp · chapa</span><span>64</span></div>David R.</div>
-          <div class="kc"><div class="src"><span>orgánico</span><span>41</span></div>Laura M.</div>
+          <div class="kc"><div class="src"><span>orgánico · motos</span><span>41</span></div>Laura M.</div>
         </div>
         <div class="kcol" id="k2"><h4>contactado <span>31</span></h4>
           <div class="kc"><div class="src"><span>meta · mecánica</span><span>72</span></div>Iván P.</div>
@@ -581,16 +637,16 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
   <div class="inner">
     <div class="tag a"><span class="n">11</span> módulo 05 · seguimiento automático</div>
     <h2 class="a" style="--d:.1s">14 días sin un solo hueco. <span class="acc">Y se para solo.</span></h2>
-    <p class="lead a" style="--d:.2s">WhatsApp, email y aviso de llamada a tu equipo, en una cadencia que ajustamos contigo. En cuanto alguien responde o agenda, la secuencia se detiene: nadie recibe un mensaje de más.</p>
+    <p class="lead a" style="--d:.2s">WhatsApp, email y aviso de llamada a tu equipo, en una cadencia que ajustamos contigo y con contenido que ya tenéis: blog, testimonios, condiciones. En cuanto alguien responde o agenda, la secuencia se detiene: nadie recibe un mensaje de más.</p>
     <div class="tl a" style="--d:.3s">
       <div class="bar"></div>
       <div class="pts">
         <div class="pt"><div class="dot">💬</div><div class="d">DÍA 0</div><div class="w">WhatsApp + email de bienvenida</div></div>
         <div class="pt"><div class="dot">📞</div><div class="d">DÍA 1</div><div class="w">Aviso de llamada al equipo</div></div>
-        <div class="pt"><div class="dot">✉️</div><div class="d">DÍA 3</div><div class="w">Email: cómo son las prácticas</div></div>
-        <div class="pt"><div class="dot">💬</div><div class="d">DÍA 5</div><div class="w">WhatsApp: resolver una duda</div></div>
+        <div class="pt"><div class="dot">✉️</div><div class="d">DÍA 3</div><div class="w">Email: testimonios de vuestro blog</div></div>
+        <div class="pt"><div class="dot">💬</div><div class="d">DÍA 5</div><div class="w">WhatsApp: qué incluye (ropa, seguro, material)</div></div>
         <div class="pt"><div class="dot">📞</div><div class="d">DÍA 7</div><div class="w">Segundo aviso de llamada</div></div>
-        <div class="pt"><div class="dot">✉️</div><div class="d">DÍA 10</div><div class="w">Email: financiación SeQura</div></div>
+        <div class="pt"><div class="dot">✉️</div><div class="d">DÍA 10</div><div class="w">Email: 20.000 vacantes en talleres</div></div>
         <div class="pt"><div class="dot">💬</div><div class="d">DÍA 14</div><div class="w">Último mensaje + cita</div></div>
         <div class="pt inf"><div class="dot">∞</div><div class="d">DESPUÉS</div><div class="w">Nutrición mensual hasta matrícula o baja</div></div>
       </div>
@@ -603,7 +659,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
   <div class="inner">
     <div class="tag a"><span class="n">12</span> módulo 06 · rescate</div>
     <h2 class="a" style="--d:.1s">Formularios a medias, <span class="acc">rescatados</span></h2>
-    <p class="lead a" style="--d:.2s">Mucha gente empieza el formulario y lo deja. Si ya ha escrito su teléfono y ha aceptado la política de privacidad, le escribimos a los 15 minutos para que termine en un clic.</p>
+    <p class="lead a" style="--d:.2s">Mucha gente empieza el formulario y lo deja. Si ya ha escrito su teléfono y ha aceptado la política de privacidad, le escribimos a los 15 minutos para que termine en un clic. Y a final de mes, aviso automático de que <b>el descuento de 200 € caduca</b> — solo a quien no se ha matriculado.</p>
     <div class="flow3 mt">
       <div class="form a" style="--d:.3s">
         <div class="fld"><label>nombre</label><div class="in">Lucía <span class="ok">✓</span></div></div>
@@ -643,9 +699,9 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
         <div class="cal">
           <div></div><div class="hd">LUN</div><div class="hd">MAR</div><div class="hd">MIÉ</div><div class="hd">JUE</div><div class="hd">VIE</div>
           <div class="hr">10:00</div><div class="sl bk">Marta G.<small>mecánica</small></div><div class="sl"></div><div class="sl bk">Iván P.<small>chapa</small></div><div class="sl"></div><div class="sl"></div>
-          <div class="hr">11:00</div><div class="sl"></div><div class="sl bk">Sergio T.<small>mecánica</small></div><div class="sl"></div><div class="sl"></div><div class="sl bk">Ana L.<small>chapa</small></div>
+          <div class="hr">11:00</div><div class="sl bk">Lead WhatsApp<small>bot · dom 23:49</small></div><div class="sl bk">Sergio T.<small>mecánica</small></div><div class="sl"></div><div class="sl"></div><div class="sl bk">Ana L.<small>chapa</small></div>
           <div class="hr">12:00</div><div class="sl"></div><div class="sl"></div><div class="sl"></div><div class="sl bk">Pablo V.<small>mecánica</small></div><div class="sl"></div>
-          <div class="hr">17:00</div><div class="sl bk">Lucía P.<small>bot · dom 23:49</small></div><div class="sl"></div><div class="sl bk">Noelia S.<small>mecánica</small></div><div class="sl"></div><div class="sl"></div>
+          <div class="hr">17:00</div><div class="sl bk">Lucía P.<small>mecánica</small></div><div class="sl"></div><div class="sl bk">Noelia S.<small>mecánica</small></div><div class="sl"></div><div class="sl"></div>
           <div class="hr">18:00</div><div class="sl"></div><div class="sl bk">David R.<small>chapa</small></div><div class="sl"></div><div class="sl"></div><div class="sl"></div>
         </div>
         <div class="rem"><span><b>24 h</b> recordatorio</span><span><b>2 h</b> recordatorio</span><span><b>no-show</b> → reagenda</span></div>
@@ -739,7 +795,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
     <div class="row4 mt">
       <div class="card a" style="--d:.3s"><div style="font-size:24px">🎒</div><h3 style="margin-top:10px">Bienvenida</h3><p class="small">Calendario, documentos y contacto de su tutor, el primer día y sin pedirlo.</p></div>
       <div class="card a" style="--d:.4s"><div style="font-size:24px">🔧</div><h3 style="margin-top:10px">Prácticas</h3><p class="small">Asignación de taller por código postal y recordatorios de cada fase.</p></div>
-      <div class="card a" style="--d:.5s"><div style="font-size:24px">⭐</div><h3 style="margin-top:10px">Reseñas</h3><p class="small">Al terminar, petición de reseña en Google en el momento de más satisfacción.</p></div>
+      <div class="card a" style="--d:.5s"><div style="font-size:24px">⭐</div><h3 style="margin-top:10px">Reseñas</h3><p class="small">Al terminar, petición de reseña en Google. Hoy no se ven reseñas vuestras; el líder del sector tiene más de 1.000.</p></div>
       <div class="card a" style="--d:.6s"><div style="font-size:24px">🤝</div><h3 style="margin-top:10px">Trae a un amigo</h3><p class="small">Enlace personal con seguimiento: sabes quién recomienda y a quién.</p></div>
     </div>
   </div>
@@ -864,6 +920,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 (()=>{
 const slides=[...document.querySelectorAll('.slide')];
 const N=slides.length;
+slides.forEach((s,k)=>{const n=s.querySelector('.tag .n');if(n)n.textContent=String(k+1).padStart(2,'0')});
 let cur=-1,lock=false,timers=[];
 const later=(fn,ms)=>timers.push(setTimeout(fn,ms));
 const clearT=()=>{timers.forEach(clearTimeout);timers=[]};
