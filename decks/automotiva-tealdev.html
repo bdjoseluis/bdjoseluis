@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automotiva × Tealdev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#0a1211}
+body{font-family:'Inter',sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* ---------- themes ---------- */
+.slide{--fg:#eef3f2;--muted:#a3b5b1;--dim:#62756f;--card:rgba(255,255,255,.04);--card2:rgba(255,255,255,.07);--line:rgba(255,255,255,.09);--acc:#2dd4bf;--acc2:#0D9488;--bad:#f87171;
+  background:radial-gradient(1100px 650px at 12% 8%,rgba(13,148,136,.24),transparent 60%),radial-gradient(900px 600px at 92% 95%,rgba(45,212,191,.09),transparent 60%),#0a1211;color:var(--fg)}
+.t-deep{background:radial-gradient(1000px 650px at 88% 10%,rgba(99,102,241,.22),transparent 60%),radial-gradient(900px 600px at 5% 95%,rgba(13,148,136,.18),transparent 60%),#0b0d19}
+.t-light{--fg:#0d1716;--muted:#45524f;--dim:#86928f;--card:#ffffff;--card2:#f7f5ef;--line:#e2ddd1;--acc:#0b8278;--acc2:#0D9488;--bad:#dc2626;
+  background:radial-gradient(900px 600px at 90% 0%,rgba(13,148,136,.13),transparent 60%),radial-gradient(800px 500px at 0% 100%,rgba(224,169,109,.12),transparent 60%),#f3f1ea}
+.t-amber{--acc:#f0b46c;--acc2:#d38b3a;--card:rgba(255,200,140,.05);--line:rgba(255,200,140,.14);
+  background:radial-gradient(1000px 650px at 80% 20%,rgba(240,180,108,.22),transparent 60%),radial-gradient(800px 500px at 10% 90%,rgba(211,139,58,.12),transparent 60%),#120d08}
+
+/* ---------- slide mechanics ---------- */
+.slide{position:fixed;inset:0;opacity:0;visibility:hidden;transform:translateY(5vh) scale(.985);filter:blur(6px);
+  transition:opacity .7s ease,transform .9s cubic-bezier(.2,.75,.2,1),filter .7s ease,visibility 0s linear .9s;overflow:hidden}
+.slide.past{transform:translateY(-5vh) scale(.985)}
+.slide.active{opacity:1;visibility:visible;transform:none;filter:none;transition-delay:0s;z-index:2}
+.slide::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.gridbg{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(to right,var(--line) 1px,transparent 1px),linear-gradient(to bottom,var(--line) 1px,transparent 1px);background-size:72px 72px;
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at center,#000 20%,transparent 75%)}
+.inner{position:relative;z-index:1;height:100%;max-width:1280px;margin:0 auto;padding:96px 6vw 84px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;scrollbar-width:none}
+.inner::-webkit-scrollbar{display:none}
+
+.a{opacity:0;transform:translateY(18px);filter:blur(4px);transition:opacity .7s ease,transform .8s cubic-bezier(.2,.75,.2,1),filter .7s ease;transition-delay:0s}
+.slide.active .a{opacity:1;transform:none;filter:none;transition-delay:calc(var(--d,0s) + .25s)}
+
+/* ---------- HUD ---------- */
+.hud{position:fixed;z-index:20;pointer-events:none;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;color:#8aa09b;transition:color .5s}
+body.light .hud{color:#6b7774}body.light .hud-tl{color:#0d1716}body.light .hud-tl b{color:#0b8278}body.light .hud-tl img{filter:none}
+body.light .navbtn{color:#45524f;background:rgba(0,0,0,.04);border-color:#d9d4c8}
+.hud-tl{top:26px;left:6vw;display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;letter-spacing:.3px;color:#e9efee}
+.hud-tl img{width:26px;height:auto;filter:brightness(1.3)}
+.hud-tl b{color:#2dd4bf;font-weight:700}
+.hud-tr{top:30px;right:6vw}
+.hud-bl{bottom:26px;left:6vw}
+.hud-br{bottom:22px;right:6vw;display:flex;gap:10px;align-items:center;pointer-events:auto}
+.navbtn{background:rgba(127,127,127,.14);border:1px solid rgba(127,127,127,.25);color:#9fb3af;width:34px;height:34px;border-radius:9px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.2s}
+.navbtn:hover{background:#2dd4bf;color:#06201c;border-color:#2dd4bf}
+.progress{position:fixed;left:0;bottom:0;height:3px;background:linear-gradient(90deg,#0D9488,#2dd4bf);z-index:21;transition:width .7s cubic-bezier(.2,.75,.2,1);box-shadow:0 0 12px #2dd4bf}
+.wipe{position:fixed;top:0;left:0;height:2px;width:0;background:#2dd4bf;z-index:22;box-shadow:0 0 16px #2dd4bf;opacity:0}
+.wipe.go{animation:wipe .9s cubic-bezier(.6,0,.2,1)}
+@keyframes wipe{0%{width:0;opacity:1}70%{width:100%;opacity:1}100%{width:100%;opacity:0}}
+.hint{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:20;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#7c918c;letter-spacing:1px;transition:opacity .6s}
+
+/* ---------- type ---------- */
+.tag{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.tag .n{color:var(--dim)}
+h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,5.6vw,80px);line-height:1.03;letter-spacing:-2px;max-width:1100px}
+h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,3.7vw,54px);line-height:1.08;letter-spacing:-1.3px;max-width:980px;margin-bottom:18px}
+h3{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.3px;margin-bottom:8px}
+.acc{color:var(--acc)}
+.lead{font-size:clamp(15.5px,1.25vw,19px);color:var(--muted);max-width:720px}
+.small{font-size:13.5px;color:var(--muted)}
+.note{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);letter-spacing:.5px;margin-top:14px}
+b,strong{color:var(--fg);font-weight:600}
+
+/* ---------- layout ---------- */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.cols.c64{grid-template-columns:1.1fr .9fr}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.row4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;backdrop-filter:blur(6px)}
+.t-light .card{box-shadow:0 10px 30px -18px rgba(13,23,22,.25)}
+.mt{margin-top:34px}
+.list{list-style:none;margin-top:18px}
+.list li{padding:11px 0 11px 28px;border-bottom:1px solid var(--line);position:relative;font-size:14.5px;color:var(--muted)}
+.list li::before{content:'→';position:absolute;left:0;color:var(--acc);font-family:'JetBrains Mono',monospace}
+.list.x li::before{content:'✕';color:var(--bad)}
+.list.ok li::before{content:'✓'}
+.pill{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--acc)}
+.caret{display:inline-block;width:8px;height:15px;background:var(--acc);animation:blink 1s steps(1) infinite;vertical-align:-2px}
+@keyframes blink{50%{opacity:0}}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:rgba(45,212,191,.12);color:var(--acc)}
+
+/* ---------- cover ---------- */
+.duck{width:120px;filter:drop-shadow(0 0 30px rgba(45,212,191,.45));animation:bob 5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35;animation:drift 18s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(6vw,5vh)}}
+
+/* ---------- big numbers ---------- */
+.big{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(44px,6vw,92px);line-height:1;letter-spacing:-3px}
+.big small{font-size:.38em;letter-spacing:-1px;color:var(--acc);margin-left:4px}
+.stat .lbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:12px;line-height:1.5}
+
+/* ---------- dots ---------- */
+.dots{display:grid;grid-template-columns:repeat(26,1fr);gap:6px;max-width:560px}
+.dots i{display:block;aspect-ratio:1;border-radius:50%;background:var(--line);transition:background .3s,box-shadow .3s}
+.dots i.on{background:var(--acc);box-shadow:0 0 6px var(--acc)}
+
+/* ---------- broken chain ---------- */
+.chain{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin-top:36px}
+.node{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:118px;text-align:center}
+.node .s{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;margin-top:4px}
+.node.ok{border-color:rgba(45,212,191,.5)} .node.ok .s{color:var(--acc)}
+.node.ko{border-color:rgba(248,113,113,.5);animation:pulseRed 2s ease-in-out infinite} .node.ko .s{color:var(--bad)}
+.node.q{opacity:.55} .node.q .s{color:var(--dim)}
+@keyframes pulseRed{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0)}50%{box-shadow:0 0 22px -4px rgba(248,113,113,.55)}}
+.link{width:34px;height:2px;background:var(--acc);opacity:.6}
+.link.ko{background:repeating-linear-gradient(90deg,var(--bad) 0 4px,transparent 4px 8px)}
+
+/* ---------- roles ---------- */
+.role{border-top:3px solid var(--line)}
+.role.us{border-top-color:var(--acc2);background:linear-gradient(180deg,rgba(13,148,136,.09),transparent 60%),var(--card)}
+.role .who{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.role.us .who{color:var(--acc)}
+
+/* ---------- arch svg ---------- */
+.arch{width:100%;max-width:1100px;margin-top:20px}
+.arch .box{fill:var(--card);stroke:var(--line)}
+.arch .core{fill:rgba(13,148,136,.16);stroke:var(--acc)}
+.arch text{fill:var(--fg);font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600}
+.arch .sub{fill:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:400}
+.arch .wire{fill:none;stroke:var(--acc);stroke-opacity:.45;stroke-width:1.5;stroke-dasharray:4 6;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-20}}
+.arch .pkt{fill:var(--acc);filter:drop-shadow(0 0 4px #2dd4bf)}
+.corepulse{animation:corep 2.4s ease-in-out infinite;transform-origin:500px 210px}
+@keyframes corep{0%,100%{opacity:.25}50%{opacity:.7}}
+
+/* ---------- terminal ---------- */
+.term{background:#070b0a;border:1px solid rgba(255,255,255,.09);border-radius:12px;overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.7)}
+.term-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#0f1615;border-bottom:1px solid rgba(255,255,255,.07)}
+.term-bar i{width:10px;height:10px;border-radius:50%;background:#33403e}
+.term-bar i:nth-child(1){background:#ef6a5e}.term-bar i:nth-child(2){background:#f4bf4f}.term-bar i:nth-child(3){background:#61c454}
+.term-bar span{margin-left:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6e807c}
+.term-body{padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.75;color:#c9d6d3;min-height:250px;white-space:pre}
+.term-body .k{color:#2dd4bf}.term-body .s{color:#e0a96d}.term-body .c{color:#5d6f6b}.term-body .f{color:#a5b4fc}
+
+/* ---------- whatsapp ---------- */
+.wa{width:100%;max-width:400px;background:#0b141a;border:1px solid rgba(255,255,255,.08);border-radius:22px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.8);margin:0 auto}
+.wa-h{background:#1f2c34;padding:13px 16px;display:flex;gap:11px;align-items:center}
+.wa-av{width:36px;height:36px;border-radius:50%;background:#0D9488;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#04201c}
+.wa-h .nm{font-size:14px;font-weight:600;color:#e9edef}
+.wa-h .st{font-size:11px;color:#2dd4bf}
+.wa-b{padding:14px;min-height:390px;max-height:430px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;
+  background:#0b141a radial-gradient(circle at 30% 20%,rgba(255,255,255,.025),transparent 50%)}
+.wa-b .day{align-self:center;font-size:10.5px;background:#1d282f;color:#8696a0;padding:4px 10px;border-radius:6px;margin-bottom:8px}
+.bub{max-width:84%;padding:8px 12px 6px;border-radius:9px;font-size:13px;line-height:1.38;color:#e9edef;margin-bottom:7px;display:none}
+.bub.show{display:block;animation:pop .35s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.bub.in{background:#1f2c34;align-self:flex-start;border-top-left-radius:2px}
+.bub.out{background:#005c4b;align-self:flex-end;border-top-right-radius:2px}
+.bub .tm{display:block;text-align:right;font-size:9.5px;color:#8fa6a0;margin-top:2px}
+.typing{align-self:flex-end;background:#005c4b;border-radius:9px;padding:9px 12px;margin-bottom:7px;display:none}
+.typing.in{align-self:flex-start;background:#1f2c34}
+.typing.show{display:block}
+.typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#b8c7c3;margin:0 1.5px;animation:td 1s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes td{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+/* ---------- kanban ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.kpi .v{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;letter-spacing:-1px}
+.kpi .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--dim);text-transform:uppercase}
+.filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.filters span{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.filters span.on{background:var(--acc2);color:#fff;border-color:var(--acc2)}
+.kb{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kcol{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:220px}
+.kcol h4{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;justify-content:space-between}
+.kc{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:10px 11px;font-size:12.5px;margin-bottom:8px;transition:transform .35s,opacity .35s,box-shadow .35s}
+.kc .src{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--acc);margin-bottom:3px;display:flex;justify-content:space-between}
+.kc.mv{box-shadow:0 0 0 1px var(--acc),0 10px 30px -10px rgba(45,212,191,.6)}
+.kc.hide{opacity:0;transform:scale(.9)}
+.kc.won{border-color:var(--acc)}
+
+/* ---------- score ---------- */
+.gauge{width:170px;height:170px;position:relative}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .bg{fill:none;stroke:var(--line);stroke-width:12}
+.gauge .fg{fill:none;stroke:var(--acc2);stroke-width:12;stroke-linecap:round;stroke-dasharray:326.7;stroke-dashoffset:326.7;transition:stroke-dashoffset 0s}
+.slide.active .gauge .fg{stroke-dashoffset:42.5;transition:stroke-dashoffset 1.8s cubic-bezier(.2,.75,.2,1) .5s}
+.gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge .val .big{font-size:52px}
+.reason{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.reason b{font-family:'JetBrains Mono',monospace;color:var(--acc);font-weight:600}
+
+/* ---------- timeline ---------- */
+.tl{position:relative;margin-top:50px;padding-top:30px}
+.tl .bar{position:absolute;top:44px;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--acc2),var(--acc));transition:width 0s}
+.slide.active .tl .bar{width:100%;transition:width 2.4s cubic-bezier(.4,0,.2,1) .4s}
+.tl .pts{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;position:relative}
+.tl .pt{text-align:center}
+.tl .pt .dot{width:30px;height:30px;margin:0 auto 12px;border-radius:50%;background:var(--card);border:2px solid var(--acc);display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 0 0 6px rgba(13,148,136,.0)}
+.tl .pt .d{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--acc);letter-spacing:1px}
+.tl .pt .w{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
+.tl .pt.inf .dot{border-style:dashed}
+
+/* ---------- abandon ---------- */
+.form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.fld .in{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13.5px;background:var(--card2);min-height:38px;display:flex;justify-content:space-between;align-items:center}
+.fld .in .ok{color:var(--acc);font-size:12px}
+.fld.empty .in{border-style:dashed;color:var(--dim)}
+.timer{display:flex;flex-direction:column;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;color:var(--acc);font-size:12px}
+.timer .ring{width:64px;height:64px;border-radius:50%;border:2px dashed var(--acc);display:flex;align-items:center;justify-content:center;font-size:13px;animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.timer .ring span{animation:spin 8s linear infinite reverse}
+.flow3{display:grid;grid-template-columns:1fr auto 1fr;gap:26px;align-items:center}
+
+/* ---------- calendar ---------- */
+.cal{display:grid;grid-template-columns:52px repeat(5,1fr);gap:6px;font-size:11px}
+.cal .hd{font-family:'JetBrains Mono',monospace;color:var(--dim);text-align:center;font-size:10px;letter-spacing:1px;padding-bottom:4px}
+.cal .hr{font-family:'JetBrains Mono',monospace;color:var(--dim);font-size:10px;padding-top:6px}
+.cal .sl{height:34px;border-radius:7px;background:var(--card);border:1px solid var(--line)}
+.cal .sl.bk{background:var(--acc2);border-color:var(--acc2);color:#fff;padding:4px 7px;font-size:10.5px;line-height:1.25;font-weight:600}
+.cal .sl.bk small{display:block;font-weight:400;opacity:.85;font-size:9.5px}
+.rem{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.rem span{font-family:'JetBrains Mono',monospace;font-size:11px;padding:7px 12px;border-radius:8px;background:var(--card);border:1px solid var(--line);color:var(--muted)}
+.rem span b{color:var(--acc)}
+
+/* ---------- pay chain ---------- */
+.paychain{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:40px;position:relative}
+.ps{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;transition:all .45s;opacity:.4;transform:translateY(6px)}
+.ps.on{opacity:1;transform:none;border-color:var(--acc);box-shadow:0 0 30px -12px rgba(45,212,191,.6)}
+.ps .ic{font-size:22px;margin-bottom:10px}
+.ps .t{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;margin-bottom:5px}
+.ps .dd{font-size:12px;color:var(--muted);line-height:1.4}
+.ps .code{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--acc);margin-top:8px}
+
+/* ---------- ocr ---------- */
+.idcard{aspect-ratio:1.58;border-radius:12px;background:linear-gradient(135deg,#c9d3d1,#e9eeec);position:relative;overflow:hidden;max-width:300px;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
+.idcard .ph{position:absolute;left:8%;top:18%;width:26%;height:58%;border-radius:6px;background:#9fb0ad}
+.idcard .ln{position:absolute;left:40%;height:7px;border-radius:4px;background:#a8b6b3}
+.idcard .scan{position:absolute;left:0;right:0;height:3px;background:#2dd4bf;box-shadow:0 0 18px 4px rgba(45,212,191,.7);top:0;animation:scan 2.2s ease-in-out infinite}
+@keyframes scan{0%,100%{top:4%}50%{top:92%}}
+.ocrf .fld .in{font-family:'JetBrains Mono',monospace;font-size:12.5px}
+
+/* ---------- report ---------- */
+.rep{background:#0b141a;border-radius:18px;padding:16px;max-width:420px;box-shadow:0 30px 60px -25px rgba(0,0,0,.6);margin:0 auto}
+.rep .msg{background:#1f2c34;border-radius:10px;border-top-left-radius:2px;padding:14px 16px;color:#e9edef;font-size:13px;line-height:1.55}
+.rep .msg .hdr{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#2dd4bf;letter-spacing:1px;margin-bottom:8px}
+.rep .r{display:flex;justify-content:space-between;border-bottom:1px dashed rgba(255,255,255,.08);padding:4px 0}
+.rep .r b{color:#fff;font-family:'Space Grotesk',sans-serif}
+.rep .bars{display:flex;align-items:flex-end;gap:6px;height:60px;margin:12px 0 4px}
+.rep .bars i{flex:1;background:#2dd4bf;border-radius:3px 3px 0 0;height:0;transition:height 0s}
+.slide.active .rep .bars i{height:var(--h);transition:height 1.2s cubic-bezier(.2,.75,.2,1) calc(var(--d) + .6s)}
+
+/* ---------- voice ---------- */
+.wave{display:flex;align-items:center;gap:5px;height:120px}
+.wave i{width:7px;border-radius:4px;background:linear-gradient(180deg,var(--acc),var(--acc2));animation:wv 1.1s ease-in-out infinite;height:20%}
+@keyframes wv{0%,100%{height:15%}50%{height:var(--h)}}
+.premium{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#120d08;background:var(--acc);padding:7px 13px;border-radius:7px;margin-bottom:22px}
+
+/* ---------- calculator ---------- */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:30px}
+.ctrl{margin-bottom:24px}
+.ctrl .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.ctrl .top span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+.ctrl .top b{font-family:'Space Grotesk',sans-serif;font-size:24px;color:var(--acc)}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--acc2);cursor:pointer;box-shadow:0 0 0 5px rgba(13,148,136,.2)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--acc2);cursor:pointer;border:none}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--card);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--acc2);color:#fff;border-color:var(--acc2)}
+.out .o{padding:18px 0;border-bottom:1px solid var(--line)}
+.out .o .big{font-size:clamp(38px,4.4vw,64px)}
+.out .o .l{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:6px}
+.formula{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:16px}
+
+/* ---------- roadmap ---------- */
+.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
+.ph{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;position:relative}
+.ph .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--acc);margin-bottom:8px}
+.ph h3{font-size:17px}
+.ph ul{list-style:none;margin-top:12px}
+.ph li{font-size:13px;color:var(--muted);padding:5px 0;border-top:1px solid var(--line)}
+.ph.opt{border-style:dashed;background:transparent}
+.ph.opt .k{color:#c07a2c}
+
+/* ---------- research ---------- */
+.cmp{width:100%;border-collapse:collapse;font-size:13.5px}
+.cmp th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 10px 10px 0;font-weight:500}
+.cmp td{padding:12px 10px 12px 0;border-top:1px solid var(--line);color:var(--muted);vertical-align:top}
+.cmp tr.me td{color:var(--fg);font-weight:600}
+.cmp tr.me td:first-child{color:var(--acc)}
+.fact .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--acc);margin-bottom:8px}
+.fact p{font-size:14px;color:var(--muted)}
+.fact p b{color:var(--fg)}
+/* ---------- misc ---------- */
+.cta{display:inline-flex;align-items:center;gap:10px;background:var(--acc);color:#06201c;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;padding:16px 30px;border-radius:12px;margin-top:34px;box-shadow:0 20px 40px -18px rgba(45,212,191,.7)}
+
+@media(max-width:980px){
+  .cols,.cols.c64,.calc{grid-template-columns:1fr;gap:30px}
+  .row3,.row4,.phases,.kpis{grid-template-columns:1fr 1fr}
+  .kb{grid-template-columns:1fr 1fr}
+  .paychain{grid-template-columns:1fr 1fr}
+  .tl .pts{grid-template-columns:repeat(4,1fr);row-gap:24px}
+  .tl .bar{display:none}
+  .flow3{grid-template-columns:1fr}
+  .inner{justify-content:flex-start;padding:90px 6vw 90px}
+  .hint{display:none}
+}
+@media(max-width:560px){
+  .row3,.row4,.phases,.kpis,.paychain{grid-template-columns:1fr}
+  .dots{gap:4px}
+  .hud-tr{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="hud hud-tl"><img src="assets/duck.png" alt="">&lt; teal<b>dev</b> /&gt;</div>
+<div class="hud hud-tr">AUTOMOTIVA × TEALDEV · 2026</div>
+<div class="hud hud-bl" id="counter">01 / 23</div>
+<div class="hud-br hud">
+  <button class="navbtn" id="prev" aria-label="Anterior">←</button>
+  <button class="navbtn" id="next" aria-label="Siguiente">→</button>
+  <button class="navbtn" id="fs" aria-label="Pantalla completa">⛶</button>
+</div>
+<div class="hint" id="hint">← → · espacio · rueda · desliza</div>
+<div class="progress" id="progress"></div>
+<div class="wipe" id="wipe"></div>
+
+<!-- ============ 01 PORTADA ============ -->
+<section class="slide" data-fx="cover">
+  <div class="gridbg"></div>
+  <div class="orb" style="width:40vw;height:40vw;background:#0D9488;top:-10vw;right:-8vw"></div>
+  <div class="orb" style="width:30vw;height:30vw;background:#6366f1;bottom:-10vw;left:-6vw;animation-delay:-8s;opacity:.2"></div>
+  <div class="inner">
+    <img class="duck a" src="assets/duck.png" alt="" style="--d:0s">
+    <div class="a mt" style="--d:.15s"><span class="pill"><span id="coverType"></span><span class="caret"></span></span></div>
+    <h1 class="a" style="--d:.3s;margin-top:26px">338 personas al mes te escriben.<br><span class="acc">¿Cuántas reciben un segundo mensaje?</span></h1>
+    <p class="lead a" style="--d:.45s;margin-top:24px">Propuesta de automatización, chatbots y CRM para Automotiva. Todo lo que pasa entre el primer contacto y la matrícula — construido sobre lo que ya tienes.</p>
+  </div>
+</section>
+
+<!-- ============ 02 EL AÑO EN CIFRAS ============ -->
+<section class="slide t-light">
+  <div class="inner">
+    <div class="tag a"><span class="n">02</span> el punto de partida</div>
+    <h2 class="a" style="--d:.1s">Tu año, en <span class="acc">tres cifras</span></h2>
+    <div class="row3 mt">
+      <div class="stat a" style="--d:.2s"><div class="big"><span class="count" data-to="40800">0</span><small>€</small></div><div class="lbl">invertidos al año en Google Ads<br>(3.400 €/mes)</div></div>
+      <div class="stat a" style="--d:.3s"><div class="big"><span class="count" data-to="4056">0</span></div><div class="lbl">personas que levantan la mano al año<br>(338/mes · formulario, llamada, WhatsApp)</div></div>
+      <div class="stat a" style="--d:.4s"><div class="big"><span class="count" data-to="48">0</span></div><div class="lbl">alumnos a día de hoy<br>(480 h · 1.480 € / 1.680 € con SeQura)</div></div>
+    </div>
+    <p class="lead a mt" style="--d:.55s">La publicidad <b>ya funciona</b>: genera demanda. El hueco está en lo que pasa después — entre que alguien escribe y que alguien se matricula. Ahí es donde entramos nosotros.</p>
+  </div>
+</section>
+
+
+<!-- ============ INVESTIGACIÓN ============ -->
+<section class="slide t-deep">
+  <div class="gridbg"></div>
+  <div class="inner">
+    <div class="tag a"><span class="n"></span> lo que hemos investigado</div>
+    <h2 class="a" style="--d:.1s">Antes de proponer nada, <span class="acc">miramos lo que ya hacéis</span></h2>
+    <div class="row3 mt">
+      <div class="card fact a" style="--d:.2s"><div class="k">3 líneas, no 2</div><p><b>Electromecánica del automóvil, Chapa y Pintura y Mecánica de motos.</b> El bot y el panel las tratan por separado desde el primer día.</p></div>
+      <div class="card fact a" style="--d:.27s"><div class="k">prácticas desde el minuto uno</div><p><b>480 h en talleres y concesionarios oficiales</b> de la localidad del alumno, en toda España.</p></div>
+      <div class="card fact a" style="--d:.34s"><div class="k">flexibilidad</div><p>Se puede terminar <b>en 3 meses</b> o hacer <b>solo de mañanas</b>. Sin estudios previos.</p></div>
+      <div class="card fact a" style="--d:.41s"><div class="k">todo incluido</div><p><b>Ropa de trabajo, seguro de RC y accidentes y material.</b> Argumento de venta que hoy nadie repite por WhatsApp.</p></div>
+      <div class="card fact a" style="--d:.48s"><div class="k">certificado</div><p><b>Certificado privado de prácticas</b> firmado y sellado por el jefe de taller y la escuela.</p></div>
+      <div class="card fact a" style="--d:.55s"><div class="k">captación</div><p>Dos landings de campaña (<b>mecánica</b> y <b>chapa y pintura</b>) con <b>200 € de descuento "solo este mes"</b>, y un blog con artículos y testimonios.</p></div>
+    </div>
+    <p class="note a" style="--d:.65s">// fuente: automotiva.eu, cursomecanica.automotiva.eu y cursochapaypintura.automotiva.eu · octubre 2026</p>
+  </div>
+</section>
+
+<!-- ============ MERCADO ============ -->
+<section class="slide t-light">
+  <div class="inner">
+    <div class="tag a"><span class="n"></span> el mercado</div>
+    <h2 class="a" style="--d:.1s">Hay más demanda que mecánicos. <span class="acc">Y sois más baratos que el líder.</span></h2>
+    <div class="cols mt" style="align-items:start">
+      <div class="a" style="--d:.2s">
+        <div class="big"><span class="count" data-to="20000">0</span></div>
+        <div class="stat"><div class="lbl">puestos sin cubrir en talleres españoles · sept. 2026</div></div>
+        <p class="lead" style="margin-top:18px">Y no solo mecánicos: también <b>chapistas y pintores</b>. Hay talleres que tardan tres meses en encontrar un chapista. Es el mejor argumento de venta que tenéis — y hoy no llega a ningún lead.</p>
+        <p class="note">// elEconomista, Telemadrid, Híbridos y Eléctricos · septiembre 2026</p>
+      </div>
+      <div class="card a" style="--d:.3s">
+        <table class="cmp">
+          <tr><th>centro</th><th>curso</th><th>precio</th><th>reseñas</th></tr>
+          <tr class="me"><td>Automotiva</td><td>480 h prácticas</td><td>1.480 €</td><td>no visibles</td></tr>
+          <tr><td>Grupo Atrium</td><td>Mecánica y electricidad · Madrid/Bcn</td><td>2.195 €</td><td>4,7★ · 1.067</td></tr>
+          <tr><td>Grupo Atrium</td><td>Motos · 480 h</td><td>1.995 €</td><td>—</td></tr>
+          <tr><td>ITA</td><td>500 h · 6 meses</td><td>consultar</td><td>5,0★ · 1</td></tr>
+        </table>
+        <p class="note">// precios públicos en educaweb y emagister; pueden haber cambiado</p>
+      </div>
+    </div>
+    <p class="lead a mt" style="--d:.45s">El producto es bueno y el precio compite. Lo que os falta es <b>velocidad de respuesta</b> y <b>prueba social</b>. Las dos cosas se automatizan.</p>
+  </div>
+</section>
+
+<!-- ============ 03 COSTE POR CONTACTO ============ -->
+<section class="slide" data-fx="dots">
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="tag a"><span class="n">03</span> la cuenta que nadie hace</div>
+        <h2 class="a" style="--d:.1s">Cada contacto te cuesta <span class="acc">~10 €</span></h2>
+        <p class="lead a" style="--d:.2s"><span class="mono" style="color:var(--acc)">3.400 € ÷ 338 = 10,06 €</span><br>por cada persona que rellena el formulario, llama o escribe.</p>
+        <p class="lead a" style="--d:.3s;margin-top:18px">Un contacto que no recibe respuesta no es "un lead frío": son <b>10 € tirados</b> y un posible alumno de <b>1.480 €</b> que acaba en otra escuela.</p>
+      </div>
+      <div class="a" style="--d:.2s">
+        <div class="dots" id="dots"></div>
+        <p class="note">// cada punto = 1 contacto de este mes · 338 en total</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 DIAGNÓSTICO ============ -->
+<section class="slide t-deep">
+  <div class="gridbg"></div>
+  <div class="inner">
+    <div class="tag a"><span class="n">04</span> diagnóstico</div>
+    <h2 class="a" style="--d:.1s">Dónde se <span style="color:var(--bad)">rompe</span> hoy la cadena</h2>
+    <p class="lead a" style="--d:.2s">El anuncio funciona y la gente escribe. A partir de ahí, todo depende de que alguien esté libre, se acuerde y lo apunte.</p>
+    <div class="chain a" style="--d:.3s">
+      <div class="node ok"><b>Anuncio</b><div class="s">✓ funciona</div></div><div class="link"></div>
+      <div class="node ok"><b>Contacto</b><div class="s">✓ 338/mes</div></div><div class="link ko"></div>
+      <div class="node ko"><b>Registro</b><div class="s">✕ manual</div></div><div class="link ko"></div>
+      <div class="node ko"><b>1ª respuesta</b><div class="s">✕ si hay alguien</div></div><div class="link ko"></div>
+      <div class="node ko"><b>Seguimiento</b><div class="s">✕ no existe</div></div><div class="link ko"></div>
+      <div class="node q"><b>Cita</b><div class="s">? sin medir</div></div><div class="link ko"></div>
+      <div class="node q"><b>Matrícula</b><div class="s">? sin origen</div></div>
+    </div>
+    <div class="row3 mt">
+      <div class="card a" style="--d:.45s"><h3>Odoo, desconectado</h3><p class="small">Está instalado, pero los contactos no entran solos. Lo que no se apunta, no existe.</p></div>
+      <div class="card a" style="--d:.55s"><h3>Fuera de horario, silencio</h3><p class="small">Quien escribe un domingo por la noche espera al lunes. O no espera.</p></div>
+      <div class="card a" style="--d:.65s"><h3>Sin trazabilidad</h3><p class="small">No se sabe qué anuncio o qué curso acaba en matrícula. Se decide a ojo.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 ROLES ============ -->
+<section class="slide t-light">
+  <div class="inner">
+    <div class="tag a"><span class="n">05</span> reparto de papeles</div>
+    <h2 class="a" style="--d:.1s">Cada uno, <span class="acc">a lo suyo</span></h2>
+    <p class="lead a" style="--d:.2s">No venimos a pisar el trabajo de nadie. Venimos a conectar lo que ya hay.</p>
+    <div class="row3 mt">
+      <div class="card role a" style="--d:.3s"><div class="who">Jose · agencia</div><h3>Traer a la gente</h3><ul class="list"><li>Web y landings</li><li>Campañas de Google y Meta</li><li>Que el teléfono suene</li></ul></div>
+      <div class="card role us a" style="--d:.4s"><div class="who">Tealdev · nosotros</div><h3>Que nadie se pierda por el camino</h3><ul class="list"><li>Chatbots y WhatsApp automático</li><li>Odoo conectado y ordenado</li><li>Seguimiento, citas, pagos, informes</li></ul></div>
+      <div class="card role a" style="--d:.5s"><div class="who">Automotiva · tu equipo</div><h3>Convencer y cerrar</h3><ul class="list"><li>La conversación de verdad</li><li>La confianza y el trato</li><li>La decisión final</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 ARQUITECTURA ============ -->
+<section class="slide">
+  <div class="gridbg"></div>
+  <div class="inner">
+    <div class="tag a"><span class="n">06</span> arquitectura</div>
+    <h2 class="a" style="--d:.1s">Todo entra por un sitio. <span class="acc">Todo sale ordenado.</span></h2>
+    <p class="lead a" style="--d:.2s">Un motor propio en el centro: recibe cada contacto, decide qué hacer con él y lo reparte a cada herramienta. Sin plataformas cerradas ni cuotas por usuario.</p>
+    <svg class="arch a" style="--d:.3s" viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg">
+      <path id="w1" class="wire" d="M190,63 C300,63 300,210 400,210"/>
+      <path id="w2" class="wire" d="M190,153 C300,153 300,210 400,210"/>
+      <path id="w3" class="wire" d="M190,243 C300,243 300,210 400,210"/>
+      <path id="w4" class="wire" d="M190,333 C300,333 300,210 400,210"/>
+      <path id="o1" class="wire" d="M600,210 C700,210 700,43 810,43"/>
+      <path id="o2" class="wire" d="M600,210 C700,210 700,123 810,123"/>
+      <path id="o3" class="wire" d="M600,210 C700,210 700,203 810,203"/>
+      <path id="o4" class="wire" d="M600,210 C700,210 700,283 810,283"/>
+      <path id="o5" class="wire" d="M600,210 C700,210 700,363 810,363"/>
+      <circle r="4" class="pkt"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#w1"/></animateMotion></circle>
+      <circle r="4" class="pkt"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#w2"/></animateMotion></circle>
+      <circle r="4" class="pkt"><animateMotion dur="2.0s" repeatCount="indefinite"><mpath href="#w3"/></animateMotion></circle>
+      <circle r="4" class="pkt"><animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#w4"/></animateMotion></circle>
+      <circle r="4" class="pkt"><animateMotion dur="2.3s" repeatCount="indefinite"><mpath href="#o1"/></animateMotion></circle>
+      <circle r="4" class="pkt"><animateMotion dur="2.1s" repeatCount="indefinite"><mpath href="#o2"/></animateMotion></circle>
+      <circle r="4" class="pkt"><animateMotion dur="2.5s" repeatCount="indefinite"><mpath href="#o3"/></animateMotion></circle>
+      <circle r="4" class="pkt"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#o4"/></animateMotion></circle>
+      <circle r="4" class="pkt"><animateMotion dur="2.7s" repeatCount="indefinite"><mpath href="#o5"/></animateMotion></circle>
+      <g><rect class="box" x="20" y="40" width="170" height="46" rx="10"/><text x="38" y="69">Formulario web</text></g>
+      <g><rect class="box" x="20" y="130" width="170" height="46" rx="10"/><text x="38" y="159">Llamada</text></g>
+      <g><rect class="box" x="20" y="220" width="170" height="46" rx="10"/><text x="38" y="249">WhatsApp</text></g>
+      <g><rect class="box" x="20" y="310" width="170" height="46" rx="10"/><text x="38" y="339">Chat de la web</text></g>
+      <rect class="core corepulse" x="390" y="130" width="220" height="160" rx="18" fill="none" stroke-width="6" style="stroke:var(--acc)"/>
+      <rect class="core" x="400" y="140" width="200" height="140" rx="14"/>
+      <text x="500" y="196" text-anchor="middle" style="font-size:19px">Motor tealdev</text>
+      <text class="sub" x="500" y="220" text-anchor="middle">scripts · IA · reglas</text>
+      <text class="sub" x="500" y="240" text-anchor="middle">Node / Python</text>
+      <g><rect class="box" x="810" y="20" width="170" height="46" rx="10"/><text x="828" y="49">Odoo CRM</text></g>
+      <g><rect class="box" x="810" y="100" width="170" height="46" rx="10"/><text x="828" y="129">WhatsApp API</text></g>
+      <g><rect class="box" x="810" y="180" width="170" height="46" rx="10"/><text x="828" y="209">Email</text></g>
+      <g><rect class="box" x="810" y="260" width="170" height="46" rx="10"/><text x="828" y="289">Panel en vivo</text></g>
+      <g><rect class="box" x="810" y="340" width="170" height="46" rx="10"/><text x="828" y="369">Calendario</text></g>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ 07 MÓDULO 01 INGESTA ============ -->
+<section class="slide t-deep" data-fx="term">
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="tag a"><span class="n">07</span> módulo 01 · entrada única</div>
+        <h2 class="a" style="--d:.1s">Todo contacto, <span class="acc">en Odoo en 2 segundos</span></h2>
+        <p class="lead a" style="--d:.2s">Venga de donde venga, un script propio lo limpia, comprueba si ya existe y lo guarda con su origen. Sin teclear nada.</p>
+        <ul class="list ok a" style="--d:.3s">
+          <li><b>Sin duplicados:</b> mismo teléfono, misma ficha</li>
+          <li><b>Con origen:</b> campaña, anuncio y página exactos</li>
+          <li><b>Normalizado:</b> teléfono, curso y provincia limpios</li>
+          <li><b>Odoo manda:</b> sigue siendo tu CRM, ahora con datos</li>
+        </ul>
+      </div>
+      <div class="term a" style="--d:.25s">
+        <div class="term-bar"><i></i><i></i><i></i><span>tealdev/automotiva/ingesta.js</span></div>
+        <div class="term-body" id="code1"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 MÓDULO 02 BOT WHATSAPP ============ -->
+<section class="slide" data-fx="wa">
+  <div class="inner">
+    <div class="cols c64">
+      <div>
+        <div class="tag a"><span class="n">08</span> módulo 02 · chatbot whatsapp</div>
+        <h2 class="a" style="--d:.1s">Domingo, 23:47.<br><span class="acc">Nadie en la escuela. El bot, sí.</span></h2>
+        <ul class="list ok a" style="--d:.25s">
+          <li><b>Responde en segundos,</b> a cualquier hora, cualquier día</li>
+          <li><b>Solo dice lo que tú apruebas:</b> cursos, precios, plazos</li>
+          <li><b>Si no sabe, no inventa:</b> pasa la conversación a una persona</li>
+          <li><b>Se presenta como automático,</b> siempre</li>
+          <li><b>Agenda la llamada</b> en huecos reales de tu calendario</li>
+          <li><b>Aprende de vuestra web y blog:</b> cursos, condiciones, preguntas frecuentes</li>
+          <li><b>Todo queda en la ficha</b> de Odoo, palabra por palabra</li>
+        </ul>
+        <p class="note a" style="--d:.4s">// conversación de ejemplo · se reproduce sola</p>
+      </div>
+      <div class="a" style="--d:.2s">
+        <div class="wa">
+          <div class="wa-h"><div class="wa-av">AU</div><div><div class="nm">Automotiva · Escuela</div><div class="st" id="waStatus">en línea</div></div></div>
+          <div class="wa-b" id="wa1">
+            <div class="day">DOMINGO</div>
+            <div class="bub in" data-t="buenas, cuánto cuesta el de chapa y pintura? trabajo por las tardes" data-h="23:47"></div>
+            <div class="typing"><span></span><span></span><span></span></div>
+            <div class="bub out" data-t="¡Hola! Soy el asistente automático de Automotiva 🤖 Chapa y Pintura son 480 h de prácticas en un taller de tu zona: 1.480 € al contado o 1.680 € con SeQura. Y hay modalidad solo de mañanas, así que te encaja con el trabajo. ¿En 3 o en 6 meses?" data-h="23:47"></div>
+            <div class="bub in" data-t="6 meses. incluye algo más?" data-h="23:48"></div>
+            <div class="typing"><span></span><span></span><span></span></div>
+            <div class="bub out" data-t="Ropa de trabajo, seguro y material incluidos 🔧 Al terminar, certificado firmado por el jefe de taller. ¿Te llama un asesor el lunes a las 11:00 o a las 13:00?" data-h="23:48"></div>
+            <div class="bub in" data-t="11:00" data-h="23:49"></div>
+            <div class="typing"><span></span><span></span><span></span></div>
+            <div class="bub out" data-t="Hecho ✅ Lunes 11:00. Te mando un recordatorio antes. ¡Buenas noches!" data-h="23:49"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 MÓDULO 03 PANEL ============ -->
+<section class="slide t-light" data-fx="kanban">
+  <div class="inner">
+    <div class="tag a"><span class="n">09</span> módulo 03 · panel en vivo</div>
+    <h2 class="a" style="--d:.1s">Tu embudo entero, <span class="acc">en una pantalla</span></h2>
+    <div class="a" style="--d:.2s">
+      <div class="kpis">
+        <div class="kpi"><div class="v"><span class="count" data-to="79">0</span></div><div class="l">contactos esta semana</div></div>
+        <div class="kpi"><div class="v"><span class="count" data-to="100">0</span>%</div><div class="l">respondidos &lt; 1 min</div></div>
+        <div class="kpi"><div class="v"><span class="count" data-to="23">0</span></div><div class="l">citas agendadas</div></div>
+        <div class="kpi"><div class="v" style="color:var(--acc)"><span class="count" data-to="6">0</span></div><div class="l">matrículas</div></div>
+      </div>
+      <div class="filters"><span class="on">todos</span><span>google</span><span>meta</span><span>whatsapp</span><span>orgánico</span><span>mecánica</span><span>chapa/pintura</span><span>motos</span></div>
+      <div class="kb">
+        <div class="kcol" id="k1"><h4>nuevo <span>12</span></h4>
+          <div class="kc" id="kmove"><div class="src"><span>google · mecánica</span><span>87</span></div>Lucía P. · 6 meses</div>
+          <div class="kc"><div class="src"><span>whatsapp · chapa</span><span>64</span></div>David R.</div>
+          <div class="kc"><div class="src"><span>orgánico · motos</span><span>41</span></div>Laura M.</div>
+        </div>
+        <div class="kcol" id="k2"><h4>contactado <span>31</span></h4>
+          <div class="kc"><div class="src"><span>meta · mecánica</span><span>72</span></div>Iván P.</div>
+          <div class="kc"><div class="src"><span>google · chapa</span><span>58</span></div>Sergio T.</div>
+        </div>
+        <div class="kcol" id="k3"><h4>cita <span>23</span></h4>
+          <div class="kc"><div class="src"><span>whatsapp · mecánica</span><span>91</span></div>Noelia S.</div>
+        </div>
+        <div class="kcol" id="k4"><h4>matriculado <span>6</span></h4>
+          <div class="kc won"><div class="src"><span>google · mecánica</span><span>✓</span></div>Rubén A.</div>
+        </div>
+      </div>
+    </div>
+    <p class="note a" style="--d:.4s">// datos de ejemplo · Odoo sigue siendo el CRM; el panel es la ventana para verlo claro</p>
+  </div>
+</section>
+
+<!-- ============ 10 MÓDULO 04 SCORING ============ -->
+<section class="slide t-deep">
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="tag a"><span class="n">10</span> módulo 04 · prioridad con ia</div>
+        <h2 class="a" style="--d:.1s">La IA te dice <span class="acc">a quién llamar primero</span></h2>
+        <p class="lead a" style="--d:.2s">Cada contacto recibe una puntuación que se recalcula con cada mensaje. Tu equipo abre el panel y empieza por arriba: quien está a punto de decir que sí.</p>
+        <ul class="list a" style="--d:.3s">
+          <li>Se basa en <b>señales reales</b> de la conversación, no en intuición</li>
+          <li>Ajustable: tú decides qué pesa más</li>
+          <li>Explicable: cada nota dice <b>por qué</b></li>
+        </ul>
+      </div>
+      <div class="card a" style="--d:.25s">
+        <div style="display:flex;gap:26px;align-items:center;flex-wrap:wrap">
+          <div class="gauge"><svg width="170" height="170" viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" cx="60" cy="60" r="52"/></svg>
+            <div class="val"><div class="big"><span class="count" data-to="87">0</span></div><div class="mono" style="font-size:10px;color:var(--dim);letter-spacing:1px">/ 100</div></div></div>
+          <div><h3 style="font-size:22px">Lucía P.</h3><div class="mono" style="font-size:11px;color:var(--dim)">google · mecánica · 6 meses</div><div style="margin-top:10px"><span class="chip">prioridad alta</span></div></div>
+        </div>
+        <div style="margin-top:18px">
+          <div class="reason"><span>Respondió 3 mensajes en 10 minutos</span><b>+25</b></div>
+          <div class="reason"><span>Preguntó por la financiación</span><b>+20</b></div>
+          <div class="reason"><span>Eligió fecha de inicio</span><b>+22</b></div>
+          <div class="reason"><span>Hay taller de prácticas en su zona</span><b>+20</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 MÓDULO 05 SECUENCIA ============ -->
+<section class="slide">
+  <div class="gridbg"></div>
+  <div class="inner">
+    <div class="tag a"><span class="n">11</span> módulo 05 · seguimiento automático</div>
+    <h2 class="a" style="--d:.1s">14 días sin un solo hueco. <span class="acc">Y se para solo.</span></h2>
+    <p class="lead a" style="--d:.2s">WhatsApp, email y aviso de llamada a tu equipo, en una cadencia que ajustamos contigo y con contenido que ya tenéis: blog, testimonios, condiciones. En cuanto alguien responde o agenda, la secuencia se detiene: nadie recibe un mensaje de más.</p>
+    <div class="tl a" style="--d:.3s">
+      <div class="bar"></div>
+      <div class="pts">
+        <div class="pt"><div class="dot">💬</div><div class="d">DÍA 0</div><div class="w">WhatsApp + email de bienvenida</div></div>
+        <div class="pt"><div class="dot">📞</div><div class="d">DÍA 1</div><div class="w">Aviso de llamada al equipo</div></div>
+        <div class="pt"><div class="dot">✉️</div><div class="d">DÍA 3</div><div class="w">Email: testimonios de vuestro blog</div></div>
+        <div class="pt"><div class="dot">💬</div><div class="d">DÍA 5</div><div class="w">WhatsApp: qué incluye (ropa, seguro, material)</div></div>
+        <div class="pt"><div class="dot">📞</div><div class="d">DÍA 7</div><div class="w">Segundo aviso de llamada</div></div>
+        <div class="pt"><div class="dot">✉️</div><div class="d">DÍA 10</div><div class="w">Email: 20.000 vacantes en talleres</div></div>
+        <div class="pt"><div class="dot">💬</div><div class="d">DÍA 14</div><div class="w">Último mensaje + cita</div></div>
+        <div class="pt inf"><div class="dot">∞</div><div class="d">DESPUÉS</div><div class="w">Nutrición mensual hasta matrícula o baja</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 MÓDULO 06 FORMULARIOS ABANDONADOS ============ -->
+<section class="slide t-light">
+  <div class="inner">
+    <div class="tag a"><span class="n">12</span> módulo 06 · rescate</div>
+    <h2 class="a" style="--d:.1s">Formularios a medias, <span class="acc">rescatados</span></h2>
+    <p class="lead a" style="--d:.2s">Mucha gente empieza el formulario y lo deja. Si ya ha escrito su teléfono y ha aceptado la política de privacidad, le escribimos a los 15 minutos para que termine en un clic. Y a final de mes, aviso automático de que <b>el descuento de 200 € caduca</b> — solo a quien no se ha matriculado.</p>
+    <div class="flow3 mt">
+      <div class="form a" style="--d:.3s">
+        <div class="fld"><label>nombre</label><div class="in">Lucía <span class="ok">✓</span></div></div>
+        <div class="fld"><label>teléfono</label><div class="in">6•• ••• •12 <span class="ok">✓</span></div></div>
+        <div class="fld"><label>privacidad</label><div class="in">Acepto <span class="ok">✓</span></div></div>
+        <div class="fld empty"><label>curso</label><div class="in">— sin completar —</div></div>
+        <div class="note">// abandonado a las 14:03</div>
+      </div>
+      <div class="timer a" style="--d:.5s"><div class="ring"><span>+15'</span></div>espera</div>
+      <div class="a" style="--d:.7s">
+        <div class="wa" style="max-width:360px"><div class="wa-h"><div class="wa-av">AU</div><div><div class="nm">Automotiva · Escuela</div><div class="st">en línea</div></div></div>
+          <div class="wa-b" style="min-height:0">
+            <div class="bub out show">Hola Lucía 👋 Te quedaste a medias con la información del curso. ¿Te interesa <b>Mecánica</b> o <b>Chapa y Pintura</b>? Te lo mando todo por aquí.<span class="tm">14:18 ✓✓</span></div>
+            <div class="bub in show">Mecánica!<span class="tm">14:20</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 MÓDULO 07 AGENDA ============ -->
+<section class="slide t-deep">
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="tag a"><span class="n">13</span> módulo 07 · citas</div>
+        <h2 class="a" style="--d:.1s">Citas que se agendan solas <span class="acc">y se cumplen</span></h2>
+        <ul class="list ok a" style="--d:.2s">
+          <li>El bot ofrece <b>solo huecos libres reales</b> del calendario del equipo</li>
+          <li>Recordatorio automático <b>24 h y 2 h antes</b></li>
+          <li>Si no se presenta: <b>mensaje para reagendar</b>, sin perseguir a nadie</li>
+          <li>Tu equipo recibe la ficha completa <b>antes</b> de cada llamada</li>
+        </ul>
+      </div>
+      <div class="card a" style="--d:.25s">
+        <div class="cal">
+          <div></div><div class="hd">LUN</div><div class="hd">MAR</div><div class="hd">MIÉ</div><div class="hd">JUE</div><div class="hd">VIE</div>
+          <div class="hr">10:00</div><div class="sl bk">Marta G.<small>mecánica</small></div><div class="sl"></div><div class="sl bk">Iván P.<small>chapa</small></div><div class="sl"></div><div class="sl"></div>
+          <div class="hr">11:00</div><div class="sl bk">Lead WhatsApp<small>bot · dom 23:49</small></div><div class="sl bk">Sergio T.<small>mecánica</small></div><div class="sl"></div><div class="sl"></div><div class="sl bk">Ana L.<small>chapa</small></div>
+          <div class="hr">12:00</div><div class="sl"></div><div class="sl"></div><div class="sl"></div><div class="sl bk">Pablo V.<small>mecánica</small></div><div class="sl"></div>
+          <div class="hr">17:00</div><div class="sl bk">Lucía P.<small>mecánica</small></div><div class="sl"></div><div class="sl bk">Noelia S.<small>mecánica</small></div><div class="sl"></div><div class="sl"></div>
+          <div class="hr">18:00</div><div class="sl"></div><div class="sl bk">David R.<small>chapa</small></div><div class="sl"></div><div class="sl"></div><div class="sl"></div>
+        </div>
+        <div class="rem"><span><b>24 h</b> recordatorio</span><span><b>2 h</b> recordatorio</span><span><b>no-show</b> → reagenda</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 MÓDULO 08 MATRÍCULA Y PAGO ============ -->
+<section class="slide" data-fx="pay">
+  <div class="gridbg"></div>
+  <div class="inner">
+    <div class="tag a"><span class="n">14</span> módulo 08 · matrícula</div>
+    <h2 class="a" style="--d:.1s">De «sí, me apunto» a matriculado, <span class="acc">sin papeleo</span></h2>
+    <p class="lead a" style="--d:.2s">Cuando tu equipo cierra en la llamada, pulsa un botón. Lo demás va solo: enlace de pago, confirmación, alta en Odoo y bienvenida.</p>
+    <div class="paychain a" style="--d:.3s">
+      <div class="ps"><div class="ic">🤝</div><div class="t">Sí en la llamada</div><div class="dd">Tu asesor marca "cerrado" en la ficha</div><div class="code">crm.stage = won</div></div>
+      <div class="ps"><div class="ic">💳</div><div class="t">Enlace por WhatsApp</div><div class="dd">Contado 1.480 € o SeQura 1.680 €, a elegir</div><div class="code">pago.enlace()</div></div>
+      <div class="ps"><div class="ic">✅</div><div class="t">Pago confirmado</div><div class="dd">La pasarela avisa al motor al instante</div><div class="code">webhook firmado</div></div>
+      <div class="ps"><div class="ic">🗂️</div><div class="t">Alta en Odoo</div><div class="dd">Alumno, curso, modalidad y fecha de inicio</div><div class="code">odoo.matricular()</div></div>
+      <div class="ps"><div class="ic">🎉</div><div class="t">Bienvenida</div><div class="dd">Mensaje, documentos y próximos pasos</div><div class="code">onboarding.start()</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15 MÓDULO 09 DOCUMENTACIÓN POR FOTO ============ -->
+<section class="slide t-deep" data-fx="ocr">
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="tag a"><span class="n">15</span> módulo 09 · documentación</div>
+        <h2 class="a" style="--d:.1s">Manda una foto. <span class="acc">La ficha se rellena sola.</span></h2>
+        <p class="lead a" style="--d:.2s">El alumno envía su DNI por WhatsApp; la IA lee los datos y completa la matrícula. Sin transcribir a mano, sin errores de tecleo.</p>
+        <ul class="list ok a" style="--d:.3s">
+          <li>Si la lectura no es segura, <b>lo revisa una persona</b></li>
+          <li>La imagen se guarda <b>cifrada</b> y solo en tu sistema</li>
+          <li>Cumplimiento <b>RGPD</b>: consentimiento y borrado a petición</li>
+        </ul>
+      </div>
+      <div class="a" style="--d:.25s">
+        <div class="idcard"><div class="ph"></div><div class="ln" style="top:22%;width:44%"></div><div class="ln" style="top:36%;width:36%"></div><div class="ln" style="top:50%;width:48%"></div><div class="ln" style="top:64%;width:30%"></div><div class="scan"></div></div>
+        <div class="form ocrf" style="margin-top:18px">
+          <div class="fld"><label>nombre</label><div class="in" data-v="LUCÍA P*****"></div></div>
+          <div class="fld"><label>documento</label><div class="in" data-v="•••••678Z"></div></div>
+          <div class="fld"><label>fecha de nacimiento</label><div class="in" data-v="••/••/2004"></div></div>
+          <div class="fld"><label>estado</label><div class="in" data-v="✓ verificado · confianza 98 %"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 MÓDULO 10 INFORME ============ -->
+<section class="slide t-light">
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="tag a"><span class="n">16</span> módulo 10 · informe automático</div>
+        <h2 class="a" style="--d:.1s">Cada lunes a las 8:00, <span class="acc">los números en tu móvil</span></h2>
+        <p class="lead a" style="--d:.2s">Sin entrar a ningún panel. Un resumen corto por WhatsApp o email: qué entró, qué se movió y qué curso y qué canal acaban en matrícula.</p>
+        <ul class="list a" style="--d:.3s">
+          <li>Contactos, citas y matrículas de la semana</li>
+          <li>Comparativa con la semana anterior</li>
+          <li>Coste por matrícula según origen — <b>útil también para Jose</b></li>
+        </ul>
+      </div>
+      <div class="a" style="--d:.25s">
+        <div class="rep"><div class="msg">
+          <div class="hdr">📊 RESUMEN SEMANA 42 · AUTOMOTIVA</div>
+          <div class="r"><span>Contactos nuevos</span><b>79</b></div>
+          <div class="r"><span>Respondidos en &lt; 1 min</span><b>79 / 79</b></div>
+          <div class="r"><span>Citas agendadas</span><b>23</b></div>
+          <div class="r"><span>Matrículas</span><b>6 ▲ +2</b></div>
+          <div class="r"><span>Mejor origen</span><b>Google · Mecánica</b></div>
+          <div class="bars"><i style="--h:40%;--d:0s"></i><i style="--h:55%;--d:.08s"></i><i style="--h:48%;--d:.16s"></i><i style="--h:70%;--d:.24s"></i><i style="--h:62%;--d:.32s"></i><i style="--h:85%;--d:.4s"></i><i style="--h:100%;--d:.48s"></i></div>
+          <div style="font-size:10px;color:#8696a0;font-family:'JetBrains Mono',monospace">matrículas · últimas 7 semanas</div>
+        </div></div>
+        <p class="note" style="text-align:center">// datos de ejemplo</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 17 MÓDULO 11 POST-MATRÍCULA ============ -->
+<section class="slide">
+  <div class="gridbg"></div>
+  <div class="inner">
+    <div class="tag a"><span class="n">17</span> módulo 11 · después de matricularse</div>
+    <h2 class="a" style="--d:.1s">El alumno matriculado <span class="acc">también trae alumnos</span></h2>
+    <p class="lead a" style="--d:.2s">La automatización no acaba con el pago. Un alumno bien atendido es tu mejor anuncio — y ese no lo pagas en Google.</p>
+    <div class="row4 mt">
+      <div class="card a" style="--d:.3s"><div style="font-size:24px">🎒</div><h3 style="margin-top:10px">Bienvenida</h3><p class="small">Calendario, documentos y contacto de su tutor, el primer día y sin pedirlo.</p></div>
+      <div class="card a" style="--d:.4s"><div style="font-size:24px">🔧</div><h3 style="margin-top:10px">Prácticas</h3><p class="small">Asignación de taller por código postal y recordatorios de cada fase.</p></div>
+      <div class="card a" style="--d:.5s"><div style="font-size:24px">⭐</div><h3 style="margin-top:10px">Reseñas</h3><p class="small">Al terminar, petición de reseña en Google. Hoy no se ven reseñas vuestras; el líder del sector tiene más de 1.000.</p></div>
+      <div class="card a" style="--d:.6s"><div style="font-size:24px">🤝</div><h3 style="margin-top:10px">Trae a un amigo</h3><p class="small">Enlace personal con seguimiento: sabes quién recomienda y a quién.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18 PREMIUM VOZ ============ -->
+<section class="slide t-amber">
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="premium a">★ módulo premium · opcional</div>
+        <h2 class="a" style="--d:.1s">Un asistente que <span class="acc">contesta al teléfono</span></h2>
+        <p class="lead a" style="--d:.2s">Para las llamadas fuera de horario o cuando el equipo está ocupado: una voz natural que atiende, resuelve lo básico, apunta la ficha y agenda la cita.</p>
+        <ul class="list a" style="--d:.3s">
+          <li>Atiende llamadas perdidas y fuera de horario</li>
+          <li>Transcribe la conversación y la guarda en Odoo</li>
+          <li>Agenda en el mismo calendario que el bot de WhatsApp</li>
+        </ul>
+        <div class="card a" style="--d:.4s;margin-top:22px;border-color:rgba(240,180,108,.35)">
+          <p class="small"><b style="color:var(--acc)">Proyecto aparte.</b> Requiere desarrollo específico, línea telefónica y coste de uso por minuto. Lo recomendamos como siguiente paso, cuando lo demás ya esté dando resultados.</p>
+        </div>
+      </div>
+      <div class="a" style="--d:.25s;display:flex;flex-direction:column;align-items:center;gap:20px">
+        <div class="wave" id="wave"></div>
+        <div class="mono" style="font-size:12px;color:var(--acc);letter-spacing:1px">● llamada entrante · 21:14 · atendida por el asistente</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 19 CALCULADORA ============ -->
+<section class="slide t-light" data-fx="calc">
+  <div class="inner">
+    <div class="tag a"><span class="n">19</span> calculadora</div>
+    <h2 class="a" style="--d:.1s">Pon tú el supuesto. <span class="acc">Los números salen solos.</span></h2>
+    <p class="lead a" style="--d:.2s">Sin promesas: mueve las barras con lo que te parezca realista y mira qué supone recuperar una parte de los contactos que ya llegan.</p>
+    <div class="calc a" style="--d:.3s">
+      <div class="card">
+        <div class="ctrl"><div class="top"><span>contactos al mes</span><b id="vLeads">338</b></div><input type="range" id="rLeads" min="100" max="700" step="1" value="338"></div>
+        <div class="ctrl"><div class="top"><span>% de esos contactos que recuperamos como alumnos</span><b id="vConv">1,0 %</b></div><input type="range" id="rConv" min="0.5" max="5" step="0.5" value="1"></div>
+        <div class="ctrl" style="margin-bottom:0"><div class="top"><span>precio medio</span></div><div class="seg" id="seg"><button data-v="1480" class="on">1.480 € contado</button><button data-v="1680">1.680 € SeQura</button></div></div>
+        <div class="formula" id="formula"></div>
+      </div>
+      <div class="out">
+        <div class="o"><div class="big" id="oAl">3,4</div><div class="l">alumnos extra al mes</div></div>
+        <div class="o"><div class="big acc" id="oMes">5.002 €</div><div class="l">facturación extra al mes</div></div>
+        <div class="o" style="border-bottom:none"><div class="big" id="oAno">60.029 €</div><div class="l">facturación extra al año · con el mismo gasto en Ads</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 20 SEGURIDAD ============ -->
+<section class="slide t-deep">
+  <div class="gridbg"></div>
+  <div class="inner">
+    <div class="cols">
+      <div>
+        <div class="tag a"><span class="n">20</span> seguridad</div>
+        <h2 class="a" style="--d:.1s">Un chatbot abierto al público <span class="acc">tiene que estar blindado</span></h2>
+        <p class="lead a" style="--d:.2s">Cualquiera puede escribirle. Por eso lo construimos pensando también en cómo se ataca — es parte de nuestra formación en ciberseguridad.</p>
+      </div>
+      <div class="term a" style="--d:.25s">
+        <div class="term-bar"><i></i><i></i><i></i><span>security.checklist</span></div>
+        <div class="term-body" style="white-space:normal;min-height:0"><span class="k">[✓]</span> Protección frente a manipulación del bot (prompt injection)<br><span class="k">[✓]</span> El bot no ve datos de otros alumnos ni de la escuela<br><span class="k">[✓]</span> Límite de mensajes contra spam y abuso<br><span class="k">[✓]</span> Webhooks firmados y verificados<br><span class="k">[✓]</span> Claves en gestor de secretos, nunca en el código<br><span class="k">[✓]</span> Acceso a Odoo con permisos mínimos<br><span class="k">[✓]</span> Tráfico cifrado (TLS) y registros auditables<br><span class="k">[✓]</span> RGPD: consentimiento, baja y borrado automáticos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 21 SIN HUMO ============ -->
+<section class="slide">
+  <div class="inner">
+    <div class="tag a"><span class="n">21</span> sin humo</div>
+    <h2 class="a" style="--d:.1s">Lo que <span style="color:var(--bad)">no</span> te vamos a prometer</h2>
+    <div class="cols mt" style="align-items:start">
+      <div class="card a" style="--d:.2s;border-color:rgba(248,113,113,.3)"><h3>No hacemos</h3><ul class="list x">
+        <li>Sustituir a tu equipo: la conversación que convence es suya</li>
+        <li>Garantizar un número fijo de matrículas</li>
+        <li>Campañas ni web: eso es de Jose, y lo hace él</li>
+        <li>Mandar mensajes sin consentimiento</li>
+      </ul></div>
+      <div class="card a" style="--d:.3s;border-color:rgba(45,212,191,.35)"><h3>Sí garantizamos</h3><ul class="list ok">
+        <li>Que ningún contacto se quede sin respuesta</li>
+        <li>Que el seguimiento no dependa de la memoria de nadie</li>
+        <li>Que sepas qué funciona y qué no, con datos</li>
+        <li>Que tus datos sigan siendo tuyos, en tu Odoo</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 22 HOJA DE RUTA ============ -->
+<section class="slide t-light">
+  <div class="inner">
+    <div class="tag a"><span class="n">22</span> hoja de ruta</div>
+    <h2 class="a" style="--d:.1s">Empieza pequeño. <span class="acc">Crece con resultados.</span></h2>
+    <div class="phases">
+      <div class="ph a" style="--d:.2s"><div class="k">FASE 1</div><h3>Que nadie se quede sin respuesta</h3><ul><li>Entrada única a Odoo</li><li>Chatbot de WhatsApp</li><li>Panel en vivo</li></ul></div>
+      <div class="ph a" style="--d:.3s"><div class="k">FASE 2</div><h3>Que nadie se enfríe</h3><ul><li>Seguimiento de 14 días</li><li>Prioridad con IA</li><li>Rescate de formularios</li><li>Citas y recordatorios</li></ul></div>
+      <div class="ph a" style="--d:.4s"><div class="k">FASE 3</div><h3>Que todo cierre solo</h3><ul><li>Matrícula y pago</li><li>Documentación por foto</li><li>Informe semanal</li><li>Post-matrícula y referidos</li></ul></div>
+      <div class="ph opt a" style="--d:.5s"><div class="k">★ OPCIONAL</div><h3>Asistente de voz</h3><ul><li>Llamadas fuera de horario</li><li>Proyecto y presupuesto aparte</li></ul></div>
+    </div>
+    <p class="lead a mt" style="--d:.6s">Cada módulo se presupuesta por separado. Podéis empezar por la Fase 1 y decidir el resto con resultados delante.</p>
+  </div>
+</section>
+
+<!-- ============ 23 CIERRE ============ -->
+<section class="slide" data-fx="cover2">
+  <div class="gridbg"></div>
+  <div class="orb" style="width:44vw;height:44vw;background:#0D9488;bottom:-14vw;right:-10vw"></div>
+  <div class="inner" style="align-items:center;text-align:center">
+    <img class="duck a" src="assets/duck.png" alt="" style="--d:0s;width:96px">
+    <h2 class="a" style="--d:.15s;margin-top:26px;text-align:center">Los contactos ya llegan.<br><span class="acc">Hagamos que se queden.</span></h2>
+    <p class="lead a" style="--d:.3s;margin:10px auto 0">Siguiente paso: 30 minutos para revisar vuestro Odoo y decidir juntos qué módulos entran en la Fase 1.</p>
+    <div class="cta a" style="--d:.45s">Empezamos por la Fase 1 →</div>
+    <p class="note a" style="--d:.6s;margin-top:28px">tealdev.es · web · automatización · datos</p>
+  </div>
+</section>
+
+<script>
+(()=>{
+const slides=[...document.querySelectorAll('.slide')];
+const N=slides.length;
+slides.forEach((s,k)=>{const n=s.querySelector('.tag .n');if(n)n.textContent=String(k+1).padStart(2,'0')});
+let cur=-1,lock=false,timers=[];
+const later=(fn,ms)=>timers.push(setTimeout(fn,ms));
+const clearT=()=>{timers.forEach(clearTimeout);timers=[]};
+const pad=n=>String(n).padStart(2,'0');
+const fmt=(n,dec=0)=>{const s=n.toFixed(dec).split('.');s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');return s.join(',')};
+
+function go(i){
+  i=Math.max(0,Math.min(N-1,i));
+  if(i===cur)return;
+  clearT();
+  slides.forEach((s,k)=>{s.classList.toggle('active',k===i);s.classList.toggle('past',k<i)});
+  cur=i;
+  document.getElementById('counter').textContent=pad(i+1)+' / '+pad(N);
+  document.getElementById('progress').style.width=((i+1)/N*100)+'%';
+  const w=document.getElementById('wipe');w.classList.remove('go');void w.offsetWidth;w.classList.add('go');
+  history.replaceState(null,'','#'+(i+1));
+  if(i>0)document.getElementById('hint').style.opacity=0;
+  const s=slides[i];
+  document.body.classList.toggle('light',s.classList.contains('t-light'));
+  s.querySelector('.inner').scrollTop=0;
+  s.querySelectorAll('.count').forEach(countUp);
+  const fx=s.dataset.fx; if(fx&&FX[fx])FX[fx](s);
+}
+function countUp(el){
+  const to=+el.dataset.to,dec=+(el.dataset.dec||0),steps=60;el.textContent='0';
+  for(let k=1;k<=steps;k++){const e=1-Math.pow(1-k/steps,3);later(()=>el.textContent=fmt(to*e,dec),350+k*25)}
+}
+/* ---- effects ---- */
+const FX={
+  cover(){
+    const el=document.getElementById('coverType'),txt='$ tealdev deploy --cliente=automotiva';el.textContent='';
+    [...txt].forEach((c,k)=>later(()=>el.textContent+=c,500+k*45));
+  },
+  dots(){
+    const d=document.getElementById('dots');
+    if(!d.children.length)for(let k=0;k<338;k++)d.appendChild(document.createElement('i'));
+    const ds=[...d.children];ds.forEach(x=>x.classList.remove('on'));
+    ds.forEach((x,k)=>later(()=>x.classList.add('on'),600+k*6));
+  },
+  term(s){typeCode(document.getElementById('code1'),CODE1)},
+  wa(){
+    const box=document.getElementById('wa1'),st=document.getElementById('waStatus');
+    const items=[...box.querySelectorAll('.bub,.typing')];
+    items.forEach(x=>{x.classList.remove('show');if(x.classList.contains('bub'))x.innerHTML=''});
+    st.textContent='en línea';
+    let t=700;
+    items.forEach(x=>{
+      if(x.classList.contains('typing')){
+        later(()=>{x.classList.add('show');st.textContent='escribiendo…'},t);t+=1300;
+        later(()=>{x.classList.remove('show');st.textContent='en línea'},t);
+      }else{
+        const out=x.classList.contains('out');
+        if(!out)t+=400;
+        later(()=>{x.innerHTML=x.dataset.t+'<span class="tm">'+x.dataset.h+(out?' ✓✓':'')+'</span>';x.classList.add('show')},t);
+        t+=out?900:1100;
+      }
+    });
+  },
+  kanban(){
+    const c=document.getElementById('kmove'),cols=['k1','k2','k3','k4'].map(id=>document.getElementById(id));
+    c.classList.remove('mv','won');cols[0].insertBefore(c,cols[0].children[1]);
+    [1,2,3].forEach((ci,k)=>{
+      later(()=>{c.classList.add('mv','hide')},1600+k*1700);
+      later(()=>{cols[ci].insertBefore(c,cols[ci].children[1]);c.classList.remove('hide');if(ci===3)c.classList.add('won')},1600+k*1700+350);
+    });
+  },
+  pay(s){
+    const ps=[...s.querySelectorAll('.ps')];ps.forEach(p=>p.classList.remove('on'));
+    ps.forEach((p,k)=>later(()=>p.classList.add('on'),800+k*750));
+  },
+  ocr(s){
+    const f=[...s.querySelectorAll('.ocrf .in')];f.forEach(x=>x.textContent='');
+    let t=1200;
+    f.forEach(x=>{const v=x.dataset.v;[...v].forEach((ch,k)=>later(()=>x.textContent+=ch,t+k*35));t+=v.length*35+350});
+  },
+  cover2(){},
+  calc(){}
+};
+
+const CODE1=[
+ [['c','// ingesta.js — una sola puerta para todos los contactos']],
+ [['k','export async function '],['f','nuevoContacto'],['','(raw, origen) {']],
+ [['','  const lead = '],['f','normalizar'],['','(raw);  '],['c','// +34, curso, provincia']],
+ [['','  const ficha = '],['k','await '],['','odoo.'],['f','buscarPorTelefono'],['','(lead.tel);']],
+ [['','  '],['k','if '],['','(ficha) '],['k','return '],['','odoo.'],['f','actualizar'],['','(ficha.id, lead);']],
+ [['','  const id = '],['k','await '],['','odoo.'],['f','crear'],['','('],['s',"'crm.lead'"],['',', { ...lead, origen });']],
+ [['','  '],['k','await '],['','bot.'],['f','saludar'],['','(lead.tel);        '],['c','// < 60 s']],
+ [['','  '],['k','await '],['','panel.'],['f','notificar'],['','(id);']],
+ [['','  '],['k','await '],['','seguimiento.'],['f','iniciar'],['','(id, '],['s',"'14d'"],['',');']],
+ [['','}']],
+ [['','']],
+ [['c','// ✓ lead 4057 · google/mecanica · guardado en 1,8 s']]
+];
+function typeCode(el,lines){
+  el.innerHTML='';let t=500;
+  lines.forEach(line=>{
+    const row=document.createElement('div');row.style.minHeight='1.75em';
+    later(()=>el.appendChild(row),t);
+    line.forEach(([cls,txt])=>{
+      const sp=document.createElement('span');if(cls)sp.className=cls;
+      later(()=>row.appendChild(sp),t);
+      [...txt].forEach(ch=>{later(()=>sp.textContent+=ch,t);t+=11});
+    });
+    t+=90;
+  });
+}
+
+/* wave bars */
+const wave=document.getElementById('wave');
+for(let k=0;k<38;k++){const i=document.createElement('i');i.style.setProperty('--h',(25+Math.abs(Math.sin(k*.55))*75)+'%');i.style.animationDelay=(-k*.07)+'s';wave.appendChild(i)}
+
+/* calculator */
+const rL=document.getElementById('rLeads'),rC=document.getElementById('rConv'),seg=document.getElementById('seg');
+let price=1480;
+function calc(){
+  const L=+rL.value,C=+rC.value,al=L*C/100,mes=al*price;
+  document.getElementById('vLeads').textContent=L;
+  document.getElementById('vConv').textContent=fmt(C,1)+' %';
+  document.getElementById('oAl').textContent=fmt(al,1);
+  document.getElementById('oMes').textContent=fmt(mes)+' €';
+  document.getElementById('oAno').textContent=fmt(mes*12)+' €';
+  document.getElementById('formula').textContent=L+' × '+fmt(C,1)+' % × '+fmt(price)+' € = '+fmt(mes)+' €/mes';
+}
+rL.addEventListener('input',calc);rC.addEventListener('input',calc);
+seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{seg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');price=+b.dataset.v;calc()}));
+calc();
+
+/* navigation */
+const next=()=>go(cur+1),prev=()=>go(cur-1);
+document.getElementById('next').onclick=next;
+document.getElementById('prev').onclick=prev;
+document.getElementById('fs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()};
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();next()}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev()}
+  else if(e.key==='Home')go(0);else if(e.key==='End')go(N-1);
+  else if(e.key==='f'||e.key==='F')document.getElementById('fs').click();
+});
+function canScroll(dir){
+  const el=slides[cur].querySelector('.inner');
+  if(el.scrollHeight<=el.clientHeight+4)return false;
+  return dir>0?el.scrollTop+el.clientHeight<el.scrollHeight-2:el.scrollTop>2;
+}
+window.addEventListener('wheel',e=>{
+  if(e.target.closest('input'))return;
+  const dir=Math.sign(e.deltaY);if(!dir||Math.abs(e.deltaY)<8)return;
+  if(canScroll(dir))return;
+  if(lock)return;lock=true;setTimeout(()=>lock=false,950);
+  dir>0?next():prev();
+},{passive:true});
+let tx=0,ty=0;
+window.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+window.addEventListener('touchend',e=>{
+  if(e.target.closest('input'))return;
+  const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev()}
+  else if(Math.abs(dy)>80&&!canScroll(dy<0?1:-1)){dy<0?next():prev()}
+},{passive:true});
+
+const h=parseInt(location.hash.slice(1));
+go(isNaN(h)?0:h-1);
+})();
+</script>
+</body>
+</html>
